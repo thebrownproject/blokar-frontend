@@ -22,11 +22,11 @@ import {
   Users,
 } from "lucide-react";
 
-import { NavPlatform } from "@/components/sidebar/nav-platform";
-import { NavProjects } from "@/components/sidebar/nav-projects";
-import { NavQuickActions } from "@/components/sidebar/nav-quick-actions";
-import { NavUser } from "@/components/sidebar/nav-user";
-import { TeamSwitcher } from "@/components/sidebar/team-switcher";
+import { NavPlatform } from "@/components/sidebar/sidebar-nav-platform";
+import { NavProjects } from "@/components/sidebar/sidebar-nav-projects";
+import { NavQuickActions } from "@/components/sidebar/sidebar-nav-quick-actions";
+import { NavUser } from "@/components/sidebar/sidebar-nav-user";
+import { TeamSwitcher } from "@/components/sidebar/sidebar-team-switcher";
 import {
   Sidebar,
   SidebarContent,
@@ -188,7 +188,7 @@ const data = {
   ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function SidebarApp({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
