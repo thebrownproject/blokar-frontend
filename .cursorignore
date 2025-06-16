@@ -1,0 +1,9 @@
+# .cursorignore
+.next/
+node_modules/
+.git/
+dist/
+build/
+out/
+coverage/
+.nyc_output/
