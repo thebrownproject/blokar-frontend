@@ -1,23 +1,16 @@
 "use client";
 
-import { MessageCircle, Plus } from "lucide-react";
+import { MessageCircle, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { usePanel } from "@/hooks/use-panel";
 
 export function TopBarActions() {
-  const handleChatClick = () => {
-    // Implement chat functionality
-    console.log("Opening AI Assistant...");
-  };
-
-  const handleNewClick = () => {
-    // Implement new item functionality
-    console.log("Creating new project...");
-  };
+  const { togglePanel, isOpen, closePanel } = usePanel();
 
   return (
     <div className="flex items-center gap-2">
@@ -26,7 +19,7 @@ export function TopBarActions() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={handleChatClick}
+            onClick={() => togglePanel("ai-assistant")}
             className="h-9 w-9"
           >
             <MessageCircle className="h-4 w-4" />
@@ -43,7 +36,7 @@ export function TopBarActions() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={handleNewClick}
+            onClick={() => togglePanel("new-project")}
             className="h-9 w-9"
           >
             <Plus className="h-4 w-4" />
@@ -54,6 +47,25 @@ export function TopBarActions() {
           <p>New Project</p>
         </TooltipContent>
       </Tooltip>
+
+      {isOpen && (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={closePanel}
+              className="h-9 w-9"
+            >
+              <X className="h-4 w-4" />
+              <span className="sr-only">Close panel</span>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Close Panel</p>
+          </TooltipContent>
+        </Tooltip>
+      )}
     </div>
   );
 }
