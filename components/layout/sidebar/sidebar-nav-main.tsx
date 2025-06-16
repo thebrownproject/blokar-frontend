@@ -18,7 +18,7 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 
-export function NavPlatform({
+export function NavMain({
   items,
 }: {
   items: {
@@ -79,7 +79,6 @@ export function NavPlatform({
                 <a href={item.url}>
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
-                  <ChevronRight className="ml-auto" />
                 </a>
               </SidebarMenuButton>
             </SidebarMenuItem>

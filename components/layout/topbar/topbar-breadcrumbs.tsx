@@ -82,7 +82,7 @@ export function TopBarBreadcrumbs() {
           </>
         )}
 
-        {visibleItems.slice(shouldShowEllipsis ? 1 : 0).map((item, index) => (
+        {visibleItems.slice(shouldShowEllipsis ? 1 : 0).map((item) => (
           <div key={item.href} className="flex items-center">
             <BreadcrumbItem>
               {item.isLast ? (

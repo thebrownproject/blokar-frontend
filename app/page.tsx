@@ -1,5 +1,5 @@
-import { SidebarApp } from "@/components/sidebar";
-import { TopBarApp } from "@/components/topbar";
+import { SidebarApp } from "@/components/layout/sidebar";
+import { TopBarApp } from "@/components/layout/topbar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 export default function Page() {

@@ -2,31 +2,25 @@
 
 import * as React from "react";
 import {
-  AudioWaveform,
-  BookOpen,
   Bot,
   Building,
   Building2,
   Calendar,
-  Command,
   FileText,
-  Frame,
   GalleryVerticalEnd,
   Home,
   Map,
-  PieChart,
   Plus,
   Settings2,
-  SquareTerminal,
   Upload,
   Users,
 } from "lucide-react";
 
-import { NavPlatform } from "@/components/sidebar/sidebar-nav-platform";
-import { NavProjects } from "@/components/sidebar/sidebar-nav-projects";
-import { NavQuickActions } from "@/components/sidebar/sidebar-nav-quick-actions";
-import { NavUser } from "@/components/sidebar/sidebar-nav-user";
-import { TeamSwitcher } from "@/components/sidebar/sidebar-team-switcher";
+import { NavPlatform } from "@/components/layout/sidebar/sidebar-nav-platform";
+import { NavProjects } from "@/components/layout/sidebar/sidebar-nav-projects";
+import { NavQuickActions } from "@/components/layout/sidebar/sidebar-nav-quick-actions";
+import { NavUser } from "@/components/layout/sidebar/sidebar-nav-user";
+import { TeamSwitcher } from "@/components/layout/sidebar/sidebar-team-switcher";
 import {
   Sidebar,
   SidebarContent,
