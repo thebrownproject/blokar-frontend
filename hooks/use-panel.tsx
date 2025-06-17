@@ -2,14 +2,29 @@
 
 import * as React from "react";
 
-type PanelType = "ai-assistant" | "new-project" | "notifications" | null;
+// Expanded panel types for all your CRUD operations
+type PanelType =
+  | "ai-assistant"
+  | "new-project"
+  | "edit-project"
+  | "view-project"
+  | "new-task"
+  | "edit-task"
+  | "view-task"
+  | "upload-document"
+  | "edit-document"
+  | "view-document"
+  | "new-contact"
+  | "edit-contact"
+  | null;
 
 interface PanelContextType {
   isOpen: boolean;
   panelType: PanelType;
-  openPanel: (type: PanelType) => void;
+  panelData?: any; // For passing data to panels (e.g., item to edit)
+  openPanel: (type: PanelType, data?: any) => void;
   closePanel: () => void;
-  togglePanel: (type: PanelType) => void;
+  togglePanel: (type: PanelType, data?: any) => void;
 }
 
 const PanelContext = React.createContext<PanelContextType | undefined>(
@@ -19,23 +34,26 @@ const PanelContext = React.createContext<PanelContextType | undefined>(
 export function PanelProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [panelType, setPanelType] = React.useState<PanelType>(null);
+  const [panelData, setPanelData] = React.useState<any>(undefined);
 
-  const openPanel = React.useCallback((type: PanelType) => {
+  const openPanel = React.useCallback((type: PanelType, data?: any) => {
     setPanelType(type);
+    setPanelData(data);
     setIsOpen(true);
   }, []);
 
   const closePanel = React.useCallback(() => {
     setIsOpen(false);
     setPanelType(null);
+    setPanelData(undefined);
   }, []);
 
   const togglePanel = React.useCallback(
-    (type: PanelType) => {
+    (type: PanelType, data?: any) => {
       if (isOpen && panelType === type) {
         closePanel();
       } else {
-        openPanel(type);
+        openPanel(type, data);
       }
     },
     [isOpen, panelType, openPanel, closePanel]
@@ -46,6 +64,7 @@ export function PanelProvider({ children }: { children: React.ReactNode }) {
       value={{
         isOpen,
         panelType,
+        panelData,
         openPanel,
         closePanel,
         togglePanel,
