@@ -1,6 +1,6 @@
 "use client";
 
-import { MessageCircle, Plus, X } from "lucide-react";
+import { MessageCircle, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -10,7 +10,7 @@ import {
 import { usePanel } from "@/hooks/use-panel";
 
 export function TopBarActions() {
-  const { togglePanel, isOpen, closePanel } = usePanel();
+  const { togglePanel } = usePanel();
 
   return (
     <div className="flex items-center gap-2">
@@ -47,25 +47,6 @@ export function TopBarActions() {
           <p>New Project</p>
         </TooltipContent>
       </Tooltip>
-
-      {isOpen && (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={closePanel}
-              className="h-9 w-9"
-            >
-              <X className="h-4 w-4" />
-              <span className="sr-only">Close panel</span>
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Close Panel</p>
-          </TooltipContent>
-        </Tooltip>
-      )}
     </div>
   );
 }

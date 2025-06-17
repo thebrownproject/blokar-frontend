@@ -1,15 +1,22 @@
 "use client";
 
+import { ActionPanelCard } from "../action-panel-card";
+
 interface ViewProjectPanelProps {
   data?: any;
 }
 
 export function ViewProjectPanel({ data }: ViewProjectPanelProps) {
   return (
-    <div className="p-4 space-y-4">
-      <h3 className="text-lg font-semibold">View Project</h3>
-      <p>Project details will go here...</p>
-      {data && <pre className="text-xs">{JSON.stringify(data, null, 2)}</pre>}
-    </div>
+    <ActionPanelCard title="View Project">
+      <div className="space-y-4">
+        <p className="text-muted-foreground">Project details will go here...</p>
+        {data && (
+          <pre className="text-xs bg-muted p-2 rounded">
+            {JSON.stringify(data, null, 2)}
+          </pre>
+        )}
+      </div>
+    </ActionPanelCard>
   );
 }
