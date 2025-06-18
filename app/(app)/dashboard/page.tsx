@@ -1,128 +1,154 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { usePanel } from "@/hooks/use-panel";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useUser } from "@/hooks/use-user";
+import { useProjects } from "@/hooks/use-projects";
+import {
+  Building,
+  ListTodo,
+  Users,
+  FileText,
+  TrendingUp,
+  AlertTriangle,
+} from "lucide-react";
 
-export default function Page() {
-  const { openPanel } = usePanel();
+export default function DashboardPage() {
+  const { user } = useUser();
+  const { projects, isLoading: projectsLoading } = useProjects();
 
-  // Test data for edit/view panels
-  const testProjectData = { id: 1, name: "Test Project", status: "active" };
-  const testTaskData = { id: 1, title: "Test Task", completed: false };
-  const testContactData = {
-    id: 1,
-    name: "John Doe",
-    email: "john@example.com",
+  // Dashboard stats (placeholder for now)
+  const stats = {
+    totalProjects: projects.length,
+    activeProjects: projects.filter(
+      (p) => p.status === "planning" || p.status === "approved"
+    ).length,
+    pendingTasks: 12, // TODO: Get from API
+    teamMembers: 8, // TODO: Get from API
   };
 
   return (
     <div className="flex flex-1 flex-col gap-6 p-6">
-      <h1 className="text-2xl font-bold">Dashboard</h1>
+      <div className="space-y-2">
+        <h1 className="text-2xl font-bold">
+          Welcome back, {user?.name || "User"}!
+        </h1>
+        <p className="text-muted-foreground">
+          Here's what's happening with your projects today.
+        </p>
+      </div>
 
-      {/* Test Panel Buttons */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Test Action Panels</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Project Panel Tests */}
-          <div>
-            <h3 className="font-semibold mb-2">Project Panels</h3>
-            <div className="flex gap-2">
-              <Button
-                onClick={() => openPanel("new-project")}
-                variant="outline"
-                size="sm"
-              >
-                New Project
-              </Button>
-              <Button
-                onClick={() => openPanel("edit-project", testProjectData)}
-                variant="outline"
-                size="sm"
-              >
-                Edit Project
-              </Button>
-              <Button
-                onClick={() => openPanel("view-project", testProjectData)}
-                variant="outline"
-                size="sm"
-              >
-                View Project
-              </Button>
+      {/* Stats Overview - Container Responsive Grid */}
+      <div className="grid gap-4 auto-fit-cards">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Total Projects
+            </CardTitle>
+            <Building className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {projectsLoading ? "..." : stats.totalProjects}
             </div>
-          </div>
+            <p className="text-xs text-muted-foreground">
+              All projects in your organization
+            </p>
+          </CardContent>
+        </Card>
 
-          {/* Task Panel Tests */}
-          <div>
-            <h3 className="font-semibold mb-2">Task Panels</h3>
-            <div className="flex gap-2">
-              <Button
-                onClick={() => openPanel("new-task")}
-                variant="outline"
-                size="sm"
-              >
-                New Task
-              </Button>
-              <Button
-                onClick={() => openPanel("edit-task", testTaskData)}
-                variant="outline"
-                size="sm"
-              >
-                Edit Task
-              </Button>
-              <Button
-                onClick={() => openPanel("view-task", testTaskData)}
-                variant="outline"
-                size="sm"
-              >
-                View Task
-              </Button>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Active Projects
+            </CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {projectsLoading ? "..." : stats.activeProjects}
             </div>
-          </div>
+            <p className="text-xs text-muted-foreground">
+              Currently in planning or approved
+            </p>
+          </CardContent>
+        </Card>
 
-          {/* Contact Panel Tests */}
-          <div>
-            <h3 className="font-semibold mb-2">Contact Panels</h3>
-            <div className="flex gap-2">
-              <Button
-                onClick={() => openPanel("new-contact")}
-                variant="outline"
-                size="sm"
-              >
-                New Contact
-              </Button>
-              <Button
-                onClick={() => openPanel("edit-contact", testContactData)}
-                variant="outline"
-                size="sm"
-              >
-                Edit Contact
-              </Button>
-              <Button
-                onClick={() => openPanel("view-contact", testContactData)}
-                variant="outline"
-                size="sm"
-              >
-                View Contact
-              </Button>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Pending Tasks</CardTitle>
+            <ListTodo className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.pendingTasks}</div>
+            <p className="text-xs text-muted-foreground">
+              Tasks requiring attention
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Team Members</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.teamMembers}</div>
+            <p className="text-xs text-muted-foreground">Active team members</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Recent Activity - Container Responsive Grid */}
+      <div className="grid gap-4 auto-fit-large-cards">
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent Projects</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {projectsLoading ? (
+              <p className="text-muted-foreground">Loading projects...</p>
+            ) : projects.length > 0 ? (
+              <div className="space-y-2">
+                {projects.slice(0, 5).map((project) => (
+                  <div key={project.id} className="flex items-center space-x-2">
+                    <Building className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm">{project.name}</span>
+                    <span className="text-xs text-muted-foreground ml-auto">
+                      {project.status}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-muted-foreground">No projects found.</p>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Compliance Alerts</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2">
+                <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                <span className="text-sm">Building permit renewal due</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <AlertTriangle className="h-4 w-4 text-red-500" />
+                <span className="text-sm">Safety inspection overdue</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <FileText className="h-4 w-4 text-blue-500" />
+                <span className="text-sm">
+                  New compliance document required
+                </span>
+              </div>
             </div>
-          </div>
-
-          {/* AI Assistant Test */}
-          <div>
-            <h3 className="font-semibold mb-2">AI Assistant</h3>
-            <Button
-              onClick={() => openPanel("ai-assistant")}
-              variant="outline"
-              size="sm"
-            >
-              AI Assistant
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

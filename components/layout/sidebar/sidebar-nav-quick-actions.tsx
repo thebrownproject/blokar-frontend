@@ -1,6 +1,7 @@
 "use client";
 
 import { type LucideIcon } from "lucide-react";
+import { usePanel } from "@/hooks/use-panel";
 
 import {
   SidebarGroup,
@@ -15,21 +16,35 @@ export function NavQuickActions({
 }: {
   actions: {
     name: string;
-    url: string;
+    panelType?: string;
+    url?: string;
     icon: LucideIcon;
   }[];
 }) {
+  const { openPanel } = usePanel();
+
+  const handleActionClick = (action: (typeof actions)[0]) => {
+    if (action.panelType) {
+      openPanel(action.panelType as any);
+    } else if (action.url) {
+      window.location.href = action.url;
+    }
+  };
+
   return (
-    <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>Quick Actions</SidebarGroupLabel>
+    <SidebarGroup>
+      <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
+        Quick Actions
+      </SidebarGroupLabel>
       <SidebarMenu>
         {actions.map((item) => (
           <SidebarMenuItem key={item.name}>
-            <SidebarMenuButton asChild>
-              <a href={item.url}>
-                <item.icon />
-                <span>{item.name}</span>
-              </a>
+            <SidebarMenuButton
+              onClick={() => handleActionClick(item)}
+              tooltip={item.name}
+            >
+              <item.icon />
+              <span>{item.name}</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         ))}

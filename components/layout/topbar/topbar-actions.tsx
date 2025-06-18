@@ -36,11 +36,11 @@ export function TopBarActions() {
             className="h-9 w-9"
           >
             <MessageSquare className="h-4 w-4" />
-            <span className="sr-only">Open AI Assistant</span>
+            <span className="sr-only">Open Blokar Copilot</span>
           </Button>
         </TooltipTrigger>
         <TooltipContent>
-          <p>AI Assistant</p>
+          <p>Blokar Copilot</p>
         </TooltipContent>
       </Tooltip>
 
@@ -55,7 +55,7 @@ export function TopBarActions() {
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>New</p>
+                <p>Create New</p>
               </TooltipContent>
             </Tooltip>
           </div>

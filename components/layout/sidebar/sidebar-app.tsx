@@ -2,18 +2,17 @@
 
 import * as React from "react";
 import {
-  Bot,
   Building,
   Building2,
-  Calendar,
   FileText,
   GalleryVerticalEnd,
   Home,
   Map,
   Plus,
-  Settings2,
   Upload,
   Users,
+  MessageSquare,
+  ListTodo,
 } from "lucide-react";
 
 import { NavPlatform } from "@/components/layout/sidebar/sidebar-nav-platform";
@@ -21,6 +20,8 @@ import { NavProjects } from "@/components/layout/sidebar/sidebar-nav-projects";
 import { NavQuickActions } from "@/components/layout/sidebar/sidebar-nav-quick-actions";
 import { NavUser } from "@/components/layout/sidebar/sidebar-nav-user";
 import { TeamSwitcher } from "@/components/layout/sidebar/sidebar-team-switcher";
+import { useUser } from "@/hooks/use-user";
+import { useProjects } from "@/hooks/use-projects";
 import {
   Sidebar,
   SidebarContent,
@@ -29,13 +30,8 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 
-// This is sample data.
+// Static data that doesn't depend on user
 const data = {
-  user: {
-    name: "BuildSpec Pro",
-    email: "professional@buildspec.com",
-    avatar: "/avatars/buildspec.jpg",
-  },
   teams: [
     {
       name: "BuildSpec Pro",
@@ -55,12 +51,12 @@ const data = {
           url: "/dashboard/overview",
         },
         {
-          title: "Analytics",
-          url: "/dashboard/analytics",
+          title: "Project Status",
+          url: "/dashboard/project-status",
         },
         {
-          title: "Reports",
-          url: "/dashboard/reports",
+          title: "Compliance",
+          url: "/dashboard/compliance",
         },
       ],
     },
@@ -84,6 +80,64 @@ const data = {
       ],
     },
     {
+      title: "Tasks",
+      url: "/tasks",
+      icon: ListTodo,
+      items: [
+        {
+          title: "All Tasks",
+          url: "/tasks/all",
+        },
+        {
+          title: "Due Today",
+          url: "/tasks/due-today",
+        },
+        {
+          title: "Overdue",
+          url: "/tasks/overdue",
+        },
+        {
+          title: "Completed",
+          url: "/tasks/completed",
+        },
+      ],
+    },
+    {
+      title: "Team",
+      url: "/team",
+      icon: Users,
+      items: [
+        {
+          title: "All",
+          url: "/team/all",
+        },
+        {
+          title: "Consultants",
+          url: "/team/consultants",
+        },
+        {
+          title: "Authorities",
+          url: "/team/authorities",
+        },
+        {
+          title: "Contractors",
+          url: "/team/contractors",
+        },
+        {
+          title: "Clients",
+          url: "/team/clients",
+        },
+        {
+          title: "Suppliers",
+          url: "/team/suppliers",
+        },
+        {
+          title: "General Contacts",
+          url: "/team/contacts",
+        },
+      ],
+    },
+    {
       title: "Documents",
       url: "/documents",
       icon: FileText,
@@ -102,87 +156,68 @@ const data = {
         },
       ],
     },
-    {
-      title: "Team",
-      url: "/team",
-      icon: Users,
-      items: [
-        {
-          title: "Contractors",
-          url: "/team/contractors",
-        },
-        {
-          title: "Subcontractors",
-          url: "/team/subcontractors",
-        },
-        {
-          title: "Contacts",
-          url: "/team/contacts",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "/settings",
-      icon: Settings2,
-      items: [
-        {
-          title: "Organization",
-          url: "/settings/organization",
-        },
-        {
-          title: "Projects",
-          url: "/settings/projects",
-        },
-        {
-          title: "Integrations",
-          url: "/settings/integrations",
-        },
-      ],
-    },
-  ],
-  projects: [
-    {
-      name: "Residential Complex",
-      url: "/projects/residential-complex",
-      icon: Building,
-    },
-    {
-      name: "Commercial Tower",
-      url: "/projects/commercial-tower",
-      icon: Building2,
-    },
-    {
-      name: "Infrastructure",
-      url: "/projects/infrastructure",
-      icon: Map,
-    },
   ],
   quickActions: [
     {
-      name: "AI Assistant",
-      url: "/ai-assistant",
-      icon: Bot,
+      name: "Blokar Copilot",
+      panelType: "ai-assistant",
+      icon: MessageSquare,
     },
     {
-      name: "New Project",
-      url: "/projects/new",
+      name: "New Task",
+      panelType: "new-task",
       icon: Plus,
     },
     {
-      name: "Schedule Meeting",
-      url: "/meetings/schedule",
-      icon: Calendar,
-    },
-    {
       name: "Upload Documents",
-      url: "/documents/upload",
+      panelType: "upload-document",
       icon: Upload,
     },
   ],
 };
 
+// Helper function to get project icon based on project type
+const getProjectIcon = (projectType: string) => {
+  switch (projectType?.toLowerCase()) {
+    case "residential":
+      return Building2;
+    case "commercial":
+      return Building;
+    case "industrial":
+      return Map;
+    default:
+      return Building;
+  }
+};
+
 export function SidebarApp({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user, isLoading: userLoading } = useUser();
+  const {
+    projects,
+    isLoading: projectsLoading,
+    error: projectsError,
+  } = useProjects();
+
+  // Create user object for NavUser component with fallback values
+  const userData = user
+    ? {
+        name: user.name || user.email?.split("@")[0] || "User",
+        email: user.email,
+        avatar: "/avatars/default.jpg", // You can add avatar support later
+      }
+    : {
+        name: "Loading...",
+        email: "loading...",
+        avatar: "/avatars/default.jpg",
+      };
+
+  // Transform API projects to the format expected by NavProjects
+  const projectsData = projects.map((project) => ({
+    name: project.name,
+    url: `/projects/${project.id}`,
+    icon: getProjectIcon(project.project_type),
+  }));
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -190,11 +225,15 @@ export function SidebarApp({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavPlatform items={data.navPlatform} />
-        <NavProjects projects={data.projects} />
         <NavQuickActions actions={data.quickActions} />
+        <NavProjects
+          projects={projectsData}
+          isLoading={projectsLoading}
+          error={projectsError}
+        />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={userData} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
