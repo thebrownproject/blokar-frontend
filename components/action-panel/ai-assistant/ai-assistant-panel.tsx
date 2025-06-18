@@ -1,15 +1,10 @@
 "use client";
 
 import { ActionPanelCard } from "../action-panel-card";
-import { MessageCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { MessageSquare } from "lucide-react";
 
 export function AiAssistantPanel() {
-  const headerActions = (
-    <Button variant="ghost" size="icon" className="h-6 w-6">
-      <MessageCircle className="h-4 w-4" />
-    </Button>
-  );
+  const headerActions = <MessageSquare className="h-4 w-4" />;
 
   return (
     <ActionPanelCard title="AI Assistant" headerActions={headerActions}>

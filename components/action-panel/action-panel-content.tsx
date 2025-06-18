@@ -9,7 +9,7 @@ import {
   EditDocumentPanel,
   ViewDocumentPanel,
 } from "./document";
-import { NewContactPanel, EditContactPanel } from "./contact";
+import { NewContactPanel, EditContactPanel, ViewContactPanel } from "./contact";
 
 export function ActionPanelContent() {
   const { panelType, panelData } = usePanel();
@@ -44,6 +44,8 @@ export function ActionPanelContent() {
         return <NewContactPanel />;
       case "edit-contact":
         return <EditContactPanel data={panelData} />;
+      case "view-contact":
+        return <ViewContactPanel data={panelData} />;
 
       default:
         return (

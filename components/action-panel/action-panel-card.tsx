@@ -30,26 +30,26 @@ export function ActionPanelCard({
     <div className="h-full pr-4 pt-4 pb-4">
       <Card className={cn("h-full flex flex-col", className)}>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-          <h3 className="font-semibold text-lg">{title}</h3>
           <div className="flex items-center gap-2">
             {headerActions}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={closePanel}
-                  className="h-6 w-6"
-                >
-                  <X className="h-4 w-4" />
-                  <span className="sr-only">Close panel</span>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Close Panel</p>
-              </TooltipContent>
-            </Tooltip>
+            <h3 className="font-semibold text-lg">{title}</h3>
           </div>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={closePanel}
+                className="h-6 w-6"
+              >
+                <X className="h-4 w-4" />
+                <span className="sr-only">Close panel</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Close Panel</p>
+            </TooltipContent>
+          </Tooltip>
         </CardHeader>
         <CardContent className="flex-1 p-0 px-6 pb-6">{children}</CardContent>
       </Card>

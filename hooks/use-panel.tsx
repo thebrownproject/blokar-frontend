@@ -16,6 +16,7 @@ type PanelType =
   | "view-document"
   | "new-contact"
   | "edit-contact"
+  | "view-contact"
   | null;
 
 interface PanelContextType {

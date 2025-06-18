@@ -1,15 +1,10 @@
 "use client";
 
 import { ActionPanelCard } from "../action-panel-card";
-import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Building } from "lucide-react";
 
 export function NewProjectPanel() {
-  const headerActions = (
-    <Button variant="ghost" size="icon" className="h-6 w-6">
-      <Plus className="h-4 w-4" />
-    </Button>
-  );
+  const headerActions = <Building className="h-4 w-4" />;
 
   return (
     <ActionPanelCard title="New Project" headerActions={headerActions}>

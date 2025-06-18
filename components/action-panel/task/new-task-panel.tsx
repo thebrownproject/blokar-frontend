@@ -2,14 +2,9 @@
 
 import { ActionPanelCard } from "../action-panel-card";
 import { ListTodo } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 export function NewTaskPanel() {
-  const headerActions = (
-    <Button variant="ghost" size="icon" className="h-6 w-6">
-      <ListTodo className="h-4 w-4" />
-    </Button>
-  );
+  const headerActions = <ListTodo className="h-4 w-4" />;
 
   return (
     <ActionPanelCard title="New Task" headerActions={headerActions}>
