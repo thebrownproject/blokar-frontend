@@ -121,15 +121,17 @@
   }
 }
 
-/* Add these responsive grid utilities */
-.auto-fit-cards {
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-}
+/* Add these responsive grid utilities in the utilities layer */
+@layer utilities {
+  .auto-fit-cards {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
 
-.auto-fit-large-cards {
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-}
+  .auto-fit-large-cards {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  }
 
-.auto-fit-buttons {
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  .auto-fit-buttons {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  }
 }
