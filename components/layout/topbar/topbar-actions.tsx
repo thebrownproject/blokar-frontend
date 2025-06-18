@@ -1,7 +1,20 @@
 "use client";
 
-import { MessageCircle, Plus, X } from "lucide-react";
+import {
+  MessageSquare,
+  Plus,
+  Building,
+  ListTodo,
+  UserPlus,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Tooltip,
   TooltipContent,
@@ -10,7 +23,7 @@ import {
 import { usePanel } from "@/hooks/use-panel";
 
 export function TopBarActions() {
-  const { togglePanel, isOpen, closePanel } = usePanel();
+  const { togglePanel, openPanel } = usePanel();
 
   return (
     <div className="flex items-center gap-2">
@@ -22,7 +35,7 @@ export function TopBarActions() {
             onClick={() => togglePanel("ai-assistant")}
             className="h-9 w-9"
           >
-            <MessageCircle className="h-4 w-4" />
+            <MessageSquare className="h-4 w-4" />
             <span className="sr-only">Open AI Assistant</span>
           </Button>
         </TooltipTrigger>
@@ -31,41 +44,53 @@ export function TopBarActions() {
         </TooltipContent>
       </Tooltip>
 
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => togglePanel("new-project")}
-            className="h-9 w-9"
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <div>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-9 w-9">
+                  <Plus className="h-4 w-4" />
+                  <span className="sr-only">Create new</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>New</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          className="min-w-48 rounded-lg"
+          align="end"
+          sideOffset={4}
+        >
+          <DropdownMenuLabel className="text-muted-foreground text-xs">
+            Create New
+          </DropdownMenuLabel>
+          <DropdownMenuItem
+            onClick={() => openPanel("new-project")}
+            className="gap-2 p-2"
           >
-            <Plus className="h-4 w-4" />
-            <span className="sr-only">Create new</span>
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>New Project</p>
-        </TooltipContent>
-      </Tooltip>
-
-      {isOpen && (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={closePanel}
-              className="h-9 w-9"
-            >
-              <X className="h-4 w-4" />
-              <span className="sr-only">Close panel</span>
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Close Panel</p>
-          </TooltipContent>
-        </Tooltip>
-      )}
+            <Building className="h-4 w-4" />
+            New Project
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => openPanel("new-task")}
+            className="gap-2 p-2"
+          >
+            <ListTodo className="h-4 w-4" />
+            New Task
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => openPanel("new-contact")}
+            className="gap-2 p-2"
+          >
+            <UserPlus className="h-4 w-4" />
+            New Contact
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }
