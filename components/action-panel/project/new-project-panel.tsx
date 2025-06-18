@@ -12,11 +12,7 @@ export function NewProjectPanel() {
   );
 
   return (
-    <ActionPanelCard
-      title="New Project"
-      headerActions={headerActions}
-      className="border-green-500/20"
-    >
+    <ActionPanelCard title="New Project" headerActions={headerActions}>
       <div className="space-y-4">
         <p className="text-muted-foreground">
           Project creation form will go here...

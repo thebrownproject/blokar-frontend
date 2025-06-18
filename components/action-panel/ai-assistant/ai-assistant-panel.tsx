@@ -12,11 +12,7 @@ export function AiAssistantPanel() {
   );
 
   return (
-    <ActionPanelCard
-      title="AI Assistant"
-      headerActions={headerActions}
-      className="border-primary/20"
-    >
+    <ActionPanelCard title="AI Assistant" headerActions={headerActions}>
       <div className="space-y-4">
         <p className="text-muted-foreground">
           AI Assistant functionality will go here...
