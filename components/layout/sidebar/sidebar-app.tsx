@@ -21,6 +21,7 @@ import { NavProjects } from "@/components/layout/sidebar/sidebar-nav-projects";
 import { NavQuickActions } from "@/components/layout/sidebar/sidebar-nav-quick-actions";
 import { NavUser } from "@/components/layout/sidebar/sidebar-nav-user";
 import { TeamSwitcher } from "@/components/layout/sidebar/sidebar-team-switcher";
+import { useUser } from "@/hooks/use-user";
 import {
   Sidebar,
   SidebarContent,
@@ -29,13 +30,8 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 
-// This is sample data.
+// Static data that doesn't depend on user
 const data = {
-  user: {
-    name: "BuildSpec Pro",
-    email: "professional@buildspec.com",
-    avatar: "/avatars/buildspec.jpg",
-  },
   teams: [
     {
       name: "BuildSpec Pro",
@@ -183,6 +179,21 @@ const data = {
 };
 
 export function SidebarApp({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user, isLoading } = useUser();
+
+  // Create user object for NavUser component with fallback values
+  const userData = user
+    ? {
+        name: user.name || user.email?.split("@")[0] || "User",
+        email: user.email,
+        avatar: "/avatars/default.jpg", // You can add avatar support later
+      }
+    : {
+        name: "Loading...",
+        email: "loading...",
+        avatar: "/avatars/default.jpg",
+      };
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -194,7 +205,7 @@ export function SidebarApp({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavQuickActions actions={data.quickActions} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={userData} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
