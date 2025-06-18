@@ -2,16 +2,13 @@
 
 import * as React from "react";
 import {
-  Bot,
   Building,
   Building2,
-  Calendar,
   FileText,
   GalleryVerticalEnd,
   Home,
   Map,
   Plus,
-  Settings2,
   Upload,
   Users,
   MessageSquare,
@@ -54,12 +51,12 @@ const data = {
           url: "/dashboard/overview",
         },
         {
-          title: "Analytics",
-          url: "/dashboard/analytics",
+          title: "Project Status",
+          url: "/dashboard/project-status",
         },
         {
-          title: "Reports",
-          url: "/dashboard/reports",
+          title: "Compliance",
+          url: "/dashboard/compliance",
         },
       ],
     },
@@ -83,6 +80,64 @@ const data = {
       ],
     },
     {
+      title: "Tasks",
+      url: "/tasks",
+      icon: ListTodo,
+      items: [
+        {
+          title: "All Tasks",
+          url: "/tasks/all",
+        },
+        {
+          title: "Due Today",
+          url: "/tasks/due-today",
+        },
+        {
+          title: "Overdue",
+          url: "/tasks/overdue",
+        },
+        {
+          title: "Completed",
+          url: "/tasks/completed",
+        },
+      ],
+    },
+    {
+      title: "Team",
+      url: "/team",
+      icon: Users,
+      items: [
+        {
+          title: "All",
+          url: "/team/all",
+        },
+        {
+          title: "Consultants",
+          url: "/team/consultants",
+        },
+        {
+          title: "Authorities",
+          url: "/team/authorities",
+        },
+        {
+          title: "Contractors",
+          url: "/team/contractors",
+        },
+        {
+          title: "Clients",
+          url: "/team/clients",
+        },
+        {
+          title: "Suppliers",
+          url: "/team/suppliers",
+        },
+        {
+          title: "General Contacts",
+          url: "/team/contacts",
+        },
+      ],
+    },
+    {
       title: "Documents",
       url: "/documents",
       icon: FileText,
@@ -101,44 +156,6 @@ const data = {
         },
       ],
     },
-    {
-      title: "Team",
-      url: "/team",
-      icon: Users,
-      items: [
-        {
-          title: "Contractors",
-          url: "/team/contractors",
-        },
-        {
-          title: "Subcontractors",
-          url: "/team/subcontractors",
-        },
-        {
-          title: "Contacts",
-          url: "/team/contacts",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "/settings",
-      icon: Settings2,
-      items: [
-        {
-          title: "Organization",
-          url: "/settings/organization",
-        },
-        {
-          title: "Projects",
-          url: "/settings/projects",
-        },
-        {
-          title: "Integrations",
-          url: "/settings/integrations",
-        },
-      ],
-    },
   ],
   quickActions: [
     {
@@ -149,7 +166,7 @@ const data = {
     {
       name: "New Task",
       panelType: "new-task",
-      icon: ListTodo,
+      icon: Plus,
     },
     {
       name: "Upload Documents",

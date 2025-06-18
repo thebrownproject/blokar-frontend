@@ -32,12 +32,17 @@ export function NavQuickActions({
   };
 
   return (
-    <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>Quick Actions</SidebarGroupLabel>
+    <SidebarGroup>
+      <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
+        Quick Actions
+      </SidebarGroupLabel>
       <SidebarMenu>
         {actions.map((item) => (
           <SidebarMenuItem key={item.name}>
-            <SidebarMenuButton onClick={() => handleActionClick(item)}>
+            <SidebarMenuButton
+              onClick={() => handleActionClick(item)}
+              tooltip={item.name}
+            >
               <item.icon />
               <span>{item.name}</span>
             </SidebarMenuButton>
