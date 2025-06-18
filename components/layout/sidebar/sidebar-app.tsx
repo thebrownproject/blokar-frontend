@@ -14,6 +14,8 @@ import {
   Settings2,
   Upload,
   Users,
+  MessageSquare,
+  ListTodo,
 } from "lucide-react";
 
 import { NavPlatform } from "@/components/layout/sidebar/sidebar-nav-platform";
@@ -22,6 +24,7 @@ import { NavQuickActions } from "@/components/layout/sidebar/sidebar-nav-quick-a
 import { NavUser } from "@/components/layout/sidebar/sidebar-nav-user";
 import { TeamSwitcher } from "@/components/layout/sidebar/sidebar-team-switcher";
 import { useUser } from "@/hooks/use-user";
+import { useProjects } from "@/hooks/use-projects";
 import {
   Sidebar,
   SidebarContent,
@@ -137,49 +140,46 @@ const data = {
       ],
     },
   ],
-  projects: [
-    {
-      name: "Residential Complex",
-      url: "/projects/residential-complex",
-      icon: Building,
-    },
-    {
-      name: "Commercial Tower",
-      url: "/projects/commercial-tower",
-      icon: Building2,
-    },
-    {
-      name: "Infrastructure",
-      url: "/projects/infrastructure",
-      icon: Map,
-    },
-  ],
   quickActions: [
     {
-      name: "AI Assistant",
-      url: "/ai-assistant",
-      icon: Bot,
+      name: "Blokar Copilot",
+      panelType: "ai-assistant",
+      icon: MessageSquare,
     },
     {
-      name: "New Project",
-      url: "/projects/new",
-      icon: Plus,
-    },
-    {
-      name: "Schedule Meeting",
-      url: "/meetings/schedule",
-      icon: Calendar,
+      name: "New Task",
+      panelType: "new-task",
+      icon: ListTodo,
     },
     {
       name: "Upload Documents",
-      url: "/documents/upload",
+      panelType: "upload-document",
       icon: Upload,
     },
   ],
 };
 
+// Helper function to get project icon based on project type
+const getProjectIcon = (projectType: string) => {
+  switch (projectType?.toLowerCase()) {
+    case "residential":
+      return Building2;
+    case "commercial":
+      return Building;
+    case "industrial":
+      return Map;
+    default:
+      return Building;
+  }
+};
+
 export function SidebarApp({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user, isLoading } = useUser();
+  const { user, isLoading: userLoading } = useUser();
+  const {
+    projects,
+    isLoading: projectsLoading,
+    error: projectsError,
+  } = useProjects();
 
   // Create user object for NavUser component with fallback values
   const userData = user
@@ -194,6 +194,13 @@ export function SidebarApp({ ...props }: React.ComponentProps<typeof Sidebar>) {
         avatar: "/avatars/default.jpg",
       };
 
+  // Transform API projects to the format expected by NavProjects
+  const projectsData = projects.map((project) => ({
+    name: project.name,
+    url: `/projects/${project.id}`,
+    icon: getProjectIcon(project.project_type),
+  }));
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -201,8 +208,12 @@ export function SidebarApp({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavPlatform items={data.navPlatform} />
-        <NavProjects projects={data.projects} />
         <NavQuickActions actions={data.quickActions} />
+        <NavProjects
+          projects={projectsData}
+          isLoading={projectsLoading}
+          error={projectsError}
+        />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={userData} />
