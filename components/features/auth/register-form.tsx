@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { authService } from "@/services/auth";
+import { useSupabaseUser } from "@/hooks/use-supabase-user";
 
 const professionalTypes = [
   { value: "architect", label: "Architect" },
@@ -50,6 +50,7 @@ export function RegisterForm({
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const router = useRouter();
+  const { register } = useSupabaseUser();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,26 +84,35 @@ export function RegisterForm({
 
     try {
       setIsSubmitting(true);
-      await authService.register({
+
+      // Create a display name from first and last name
+      const displayName =
+        [formData.first_name, formData.last_name]
+          .filter(Boolean)
+          .join(" ")
+          .trim() || formData.email.split("@")[0];
+
+      const result = await register({
         email: formData.email,
         password: formData.password,
-        professional_type: formData.professional_type,
-        first_name: formData.first_name || undefined,
-        last_name: formData.last_name || undefined,
-        company_name: formData.company_name,
+        name: displayName,
       });
 
-      setSuccessMessage(
-        "Account created successfully! Please sign in with your new account."
-      );
+      if (result.error) {
+        setError(result.error);
+      } else {
+        setSuccessMessage(
+          "Account created successfully! Please check your email to confirm your account."
+        );
 
-      // Redirect to login after 2 seconds
-      setTimeout(() => {
-        router.replace("/login");
-      }, 2000);
+        // Redirect to login after 3 seconds
+        setTimeout(() => {
+          router.replace("/login");
+        }, 3000);
+      }
     } catch (error) {
       console.error("Registration failed:", error);
-      setError(error instanceof Error ? error.message : "Registration failed");
+      setError("An unexpected error occurred during registration");
     } finally {
       setIsSubmitting(false);
     }

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { supabaseAuthService, AuthUser } from "@/services/supabase-auth";
 
-export function useUser() {
+export function useSupabaseUser() {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);

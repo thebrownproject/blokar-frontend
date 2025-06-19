@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { authService } from "@/services/auth";
+import { useSupabaseUser } from "@/hooks/use-supabase-user";
 
 export function LoginForm({
   className,
@@ -26,6 +26,7 @@ export function LoginForm({
   const [error, setError] = useState<string | null>(null);
 
   const router = useRouter();
+  const { login } = useSupabaseUser();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,12 +38,17 @@ export function LoginForm({
 
     try {
       setIsSubmitting(true);
-      await authService.login({ email, password });
-      // Redirect to dashboard on successful login
-      router.replace("/");
+      const result = await login({ email, password });
+
+      if (result.error) {
+        setError(result.error);
+      } else {
+        // Redirect to dashboard on successful login
+        router.replace("/dashboard");
+      }
     } catch (error) {
       console.error("Login failed:", error);
-      setError(error instanceof Error ? error.message : "Login failed");
+      setError("An unexpected error occurred");
     } finally {
       setIsSubmitting(false);
     }

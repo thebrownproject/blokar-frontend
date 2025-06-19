@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
-import { authService } from "@/services/auth";
+import { useSupabaseUser } from "@/hooks/use-supabase-user";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -35,24 +35,27 @@ import {
 export function NavUser({
   user,
 }: {
-  user: {
+  user?: {
     name: string;
     email: string;
     avatar: string;
-  };
+  } | null;
 }) {
   const { isMobile } = useSidebar();
   const { setTheme } = useTheme();
   const router = useRouter();
+  const { logout } = useSupabaseUser();
 
   const handleLogout = async () => {
     try {
-      await authService.logout();
+      const result = await logout();
+      if (result.error) {
+        console.error("Logout failed:", result.error);
+      }
       router.push("/login");
     } catch (error) {
       console.error("Logout failed:", error);
-      // Force logout even if API call fails
-      authService.clearTokens();
+      // Force redirect to login even if logout fails
       router.push("/login");
     }
   };
@@ -68,6 +71,29 @@ export function NavUser({
         .slice(0, 2) || "U"
     );
   };
+
+  // If no user, show a simplified login prompt
+  if (!user) {
+    return (
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton
+            size="lg"
+            onClick={() => router.push("/login")}
+            className="cursor-pointer"
+          >
+            <Avatar className="h-8 w-8 rounded-lg">
+              <AvatarFallback className="rounded-lg">?</AvatarFallback>
+            </Avatar>
+            <div className="grid flex-1 text-left text-sm leading-tight">
+              <span className="truncate font-semibold">Not logged in</span>
+              <span className="truncate text-xs">Click to login</span>
+            </div>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    );
+  }
 
   return (
     <SidebarMenu>
