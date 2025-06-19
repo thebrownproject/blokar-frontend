@@ -1,58 +1,34 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { supabaseAuthService, AuthUser } from "@/services/supabase-auth";
+import { createClient } from "@/utils/supabase/client";
+import { useEffect, useState } from "react";
+import type { User } from "@supabase/supabase-js";
 
 export function useUser() {
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const supabase = createClient();
 
   useEffect(() => {
-    // Get initial user
-    const getInitialUser = async () => {
-      try {
-        setIsLoading(true);
-        const currentUser = await supabaseAuthService.getCurrentUser();
-        const authenticated = await supabaseAuthService.isAuthenticated();
-
-        setUser(currentUser);
-        setIsAuthenticated(authenticated);
-      } catch (error) {
-        console.error("Error getting initial user:", error);
-        setUser(null);
-        setIsAuthenticated(false);
-      } finally {
-        setIsLoading(false);
-      }
+    const getUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setUser(user);
+      setLoading(false);
     };
 
-    getInitialUser();
+    getUser();
 
-    // Listen to auth state changes
     const {
       data: { subscription },
-    } = supabaseAuthService.onAuthStateChange((user) => {
-      setUser(user);
-      setIsAuthenticated(!!user);
-      setIsLoading(false);
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
+      setLoading(false);
     });
 
-    return () => {
-      subscription?.unsubscribe();
-    };
-  }, []);
+    return () => subscription.unsubscribe();
+  }, [supabase.auth]);
 
-  return {
-    user,
-    isLoading,
-    isAuthenticated,
-    // Auth methods
-    login: supabaseAuthService.login.bind(supabaseAuthService),
-    register: supabaseAuthService.register.bind(supabaseAuthService),
-    logout: supabaseAuthService.logout.bind(supabaseAuthService),
-    resetPassword: supabaseAuthService.resetPassword.bind(supabaseAuthService),
-    updatePassword:
-      supabaseAuthService.updatePassword.bind(supabaseAuthService),
-  };
+  return { user, loading };
 }

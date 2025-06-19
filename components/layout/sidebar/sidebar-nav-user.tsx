@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
-import { useSupabaseUser } from "@/hooks/use-supabase-user";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -44,18 +43,18 @@ export function NavUser({
   const { isMobile } = useSidebar();
   const { setTheme } = useTheme();
   const router = useRouter();
-  const { logout } = useSupabaseUser();
-
   const handleLogout = async () => {
     try {
-      const result = await logout();
-      if (result.error) {
-        console.error("Logout failed:", result.error);
+      const response = await fetch("/auth/logout", {
+        method: "POST",
+      });
+      if (response.redirected) {
+        window.location.href = response.url;
+      } else {
+        router.push("/login");
       }
-      router.push("/login");
     } catch (error) {
       console.error("Logout failed:", error);
-      // Force redirect to login even if logout fails
       router.push("/login");
     }
   };

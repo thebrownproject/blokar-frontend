@@ -2,17 +2,23 @@
 
 import { useState, useEffect } from "react";
 import { apiClient, Project } from "@/services/api";
-import { authService } from "@/services/auth";
+import { useUser } from "./use-user";
 
 export function useProjects() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { user, loading: userLoading } = useUser();
 
   useEffect(() => {
     const fetchProjects = async () => {
+      // Wait for user loading to complete
+      if (userLoading) {
+        return;
+      }
+
       // Only fetch if user is authenticated
-      if (!authService.isAuthenticated()) {
+      if (!user) {
         setProjects([]);
         setIsLoading(false);
         return;
@@ -35,11 +41,11 @@ export function useProjects() {
     };
 
     fetchProjects();
-  }, []);
+  }, [user, userLoading]);
 
   const refetch = () => {
     const fetchProjects = async () => {
-      if (!authService.isAuthenticated()) {
+      if (!user) {
         setProjects([]);
         return;
       }

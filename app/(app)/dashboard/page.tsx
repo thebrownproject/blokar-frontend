@@ -30,10 +30,10 @@ export default function DashboardPage() {
     <div className="flex flex-1 flex-col gap-6 p-6">
       <div className="space-y-2">
         <h1 className="text-2xl font-bold">
-          Welcome back, {user?.name || "User"}!
+          Welcome back, {user?.email?.split("@")[0] || "User"}!
         </h1>
         <p className="text-muted-foreground">
-          Here's what's happening with your projects today.
+          Here&apos;s what&apos;s happening with your projects today.
         </p>
       </div>
 
