@@ -1,38 +1,34 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { authService } from "@/services/auth";
-import { UserProfile } from "@/services/api";
+import { createClient } from "@/utils/supabase/client";
+import { useEffect, useState } from "react";
+import type { User } from "@supabase/supabase-js";
 
 export function useUser() {
-  const [user, setUser] = useState<UserProfile | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const supabase = createClient();
 
   useEffect(() => {
-    const loadUser = () => {
-      try {
-        const userProfile = authService.getUserProfile();
-        setUser(userProfile);
-      } catch (error) {
-        console.error("Failed to load user profile:", error);
-        setUser(null);
-      } finally {
-        setIsLoading(false);
-      }
+    const getUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setUser(user);
+      setLoading(false);
     };
 
-    loadUser();
+    getUser();
 
-    // Listen for storage changes (e.g., login/logout in another tab)
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === "user_profile") {
-        loadUser();
-      }
-    };
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
 
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
-  }, []);
+    return () => subscription.unsubscribe();
+  }, [supabase.auth]); // ← FIXED: Empty dependency array prevents infinite loop
 
-  return { user, isLoading };
+  return { user, loading };
 }

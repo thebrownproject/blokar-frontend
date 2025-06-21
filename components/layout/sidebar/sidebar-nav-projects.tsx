@@ -7,9 +7,8 @@ import {
   MoreHorizontal,
   Trash2,
   Loader2,
-  ChevronDown,
   ChevronUp,
-  type LucideIcon,
+  Building,
 } from "lucide-react";
 
 import {
@@ -33,26 +32,30 @@ const MAX_VISIBLE_PROJECTS = 6;
 
 export function NavProjects({
   projects,
-  isLoading = false,
-  error = null,
+  isLoading,
+  error,
 }: {
-  projects: {
-    name: string;
-    url: string;
-    icon: LucideIcon;
-  }[];
-  isLoading?: boolean;
-  error?: string | null;
+  projects: any[];
+  isLoading: boolean;
+  error: string | null;
 }) {
   const { isMobile } = useSidebar();
   const [isExpanded, setIsExpanded] = useState(false);
 
+  // Transform projects into the expected format
+  const projectItems = projects.map((project) => ({
+    name: project.name,
+    url: `/project/${project.id}`,
+    icon: Building,
+    id: project.id,
+  }));
+
   // Determine which projects to show
   const visibleProjects = isExpanded
-    ? projects
-    : projects.slice(0, MAX_VISIBLE_PROJECTS);
+    ? projectItems
+    : projectItems.slice(0, MAX_VISIBLE_PROJECTS);
 
-  const hasMoreProjects = projects.length > MAX_VISIBLE_PROJECTS;
+  const hasMoreProjects = projectItems.length > MAX_VISIBLE_PROJECTS;
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -71,7 +74,7 @@ export function NavProjects({
               <span>Failed to load projects</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
-        ) : projects.length === 0 ? (
+        ) : projectItems.length === 0 ? (
           <SidebarMenuItem>
             <SidebarMenuButton disabled className="text-muted-foreground">
               <span>No projects found</span>
@@ -80,7 +83,7 @@ export function NavProjects({
         ) : (
           <>
             {visibleProjects.map((item) => (
-              <SidebarMenuItem key={item.name}>
+              <SidebarMenuItem key={item.id}>
                 <SidebarMenuButton asChild>
                   <a href={item.url}>
                     <item.icon />
@@ -131,7 +134,7 @@ export function NavProjects({
                   <span>
                     {isExpanded
                       ? "Show Less"
-                      : `More (${projects.length - MAX_VISIBLE_PROJECTS})`}
+                      : `More (${projectItems.length - MAX_VISIBLE_PROJECTS})`}
                   </span>
                 </SidebarMenuButton>
               </SidebarMenuItem>

@@ -21,7 +21,7 @@ import { NavQuickActions } from "@/components/layout/sidebar/sidebar-nav-quick-a
 import { NavUser } from "@/components/layout/sidebar/sidebar-nav-user";
 import { TeamSwitcher } from "@/components/layout/sidebar/sidebar-team-switcher";
 import { useUser } from "@/hooks/use-user";
-import { useProjects } from "@/hooks/use-projects";
+import { useProjects } from "@/hooks/use-projects-debug";
 import {
   Sidebar,
   SidebarContent,
@@ -191,7 +191,7 @@ const getProjectIcon = (projectType: string) => {
 };
 
 export function SidebarApp({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user, isLoading: userLoading } = useUser();
+  const { user, loading: userLoading } = useUser();
   const {
     projects,
     isLoading: projectsLoading,
@@ -199,17 +199,20 @@ export function SidebarApp({ ...props }: React.ComponentProps<typeof Sidebar>) {
   } = useProjects();
 
   // Create user object for NavUser component with fallback values
-  const userData = user
-    ? {
-        name: user.name || user.email?.split("@")[0] || "User",
-        email: user.email,
-        avatar: "/avatars/default.jpg", // You can add avatar support later
-      }
-    : {
-        name: "Loading...",
-        email: "loading...",
-        avatar: "/avatars/default.jpg",
-      };
+  const userData =
+    user && !userLoading
+      ? {
+          name: user.user_metadata?.name || user.email?.split("@")[0] || "User",
+          email: user.email || "",
+          avatar: user.user_metadata?.avatar_url || "/avatars/default.jpg",
+        }
+      : userLoading
+      ? {
+          name: "Loading...",
+          email: "loading...",
+          avatar: "/avatars/default.jpg",
+        }
+      : null;
 
   // Transform API projects to the format expected by NavProjects
   const projectsData = projects.map((project) => ({
