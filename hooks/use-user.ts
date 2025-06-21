@@ -28,7 +28,7 @@ export function useUser() {
     });
 
     return () => subscription.unsubscribe();
-  }, [supabase.auth]); // ← FIXED: Empty dependency array prevents infinite loop
+  }, []); // FIXED: Empty dependency array prevents infinite loop
 
   return { user, loading };
 }

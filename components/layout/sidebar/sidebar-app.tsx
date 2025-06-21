@@ -21,7 +21,7 @@ import { NavQuickActions } from "@/components/layout/sidebar/sidebar-nav-quick-a
 import { NavUser } from "@/components/layout/sidebar/sidebar-nav-user";
 import { TeamSwitcher } from "@/components/layout/sidebar/sidebar-team-switcher";
 import { useUser } from "@/hooks/use-user";
-import { useProjects } from "@/hooks/use-projects-debug";
+import { useProjects } from "@/hooks/use-projects";
 import {
   Sidebar,
   SidebarContent,
@@ -218,7 +218,7 @@ export function SidebarApp({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const projectsData = projects.map((project) => ({
     name: project.name,
     url: `/projects/${project.id}`,
-    icon: getProjectIcon(project.project_type),
+    icon: getProjectIcon(project.type),
   }));
 
   return (
@@ -236,7 +236,7 @@ export function SidebarApp({ ...props }: React.ComponentProps<typeof Sidebar>) {
         />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={userData} />
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

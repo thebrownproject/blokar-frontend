@@ -15,28 +15,20 @@ export function useProjects() {
   const { user, loading: userLoading } = useUser();
 
   useEffect(() => {
-    let isMounted = true;
-
     const fetchProjects = async () => {
       // Wait for user loading to complete
-      if (userLoading) {
-        return;
-      }
+      if (userLoading) return;
 
       // Only fetch if user is authenticated
       if (!user) {
-        if (isMounted) {
-          setProjects([]);
-          setIsLoading(false);
-        }
+        setProjects([]);
+        setIsLoading(false);
         return;
       }
 
       try {
-        if (isMounted) {
-          setIsLoading(true);
-          setError(null);
-        }
+        setIsLoading(true);
+        setError(null);
 
         const { data, error: supabaseError } = await supabase
           .from("projects")
@@ -45,71 +37,20 @@ export function useProjects() {
 
         if (supabaseError) throw supabaseError;
 
-        if (isMounted) {
-          setProjects(data || []);
-        }
+        setProjects(data || []);
       } catch (error) {
         console.error("Failed to fetch projects:", error);
-        if (isMounted) {
-          setError(
-            error instanceof Error ? error.message : "Failed to fetch projects"
-          );
-          setProjects([]);
-        }
+        setError(
+          error instanceof Error ? error.message : "Failed to fetch projects"
+        );
+        setProjects([]);
       } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
+        setIsLoading(false);
       }
     };
 
     fetchProjects();
-
-    // Set up real-time subscription only if user is authenticated
-    let channel: any = null;
-
-    if (user && !userLoading) {
-      channel = supabase
-        .channel("projects-changes")
-        .on(
-          "postgres_changes",
-          {
-            event: "*",
-            schema: "public",
-            table: "projects",
-            filter: `user_id=eq.${user.id}`,
-          },
-          (payload) => {
-            if (!isMounted) return;
-
-            const { eventType, new: newRecord, old: oldRecord } = payload;
-
-            setProjects((prev) => {
-              switch (eventType) {
-                case "INSERT":
-                  return [newRecord as Project, ...prev];
-                case "UPDATE":
-                  return prev.map((p) =>
-                    p.id === newRecord.id ? (newRecord as Project) : p
-                  );
-                case "DELETE":
-                  return prev.filter((p) => p.id !== oldRecord.id);
-                default:
-                  return prev;
-              }
-            });
-          }
-        )
-        .subscribe();
-    }
-
-    return () => {
-      isMounted = false;
-      if (channel) {
-        channel.unsubscribe();
-      }
-    };
-  }, [user?.id, userLoading]); // Only depend on user.id and userLoading
+  }, [user?.id, userLoading]);
 
   const refetch = async () => {
     if (!user) {

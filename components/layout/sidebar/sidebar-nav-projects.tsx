@@ -28,7 +28,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-const MAX_VISIBLE_PROJECTS = 6;
+const MAX_VISIBLE_PROJECTS = 3;
 
 export function NavProjects({
   projects,
@@ -43,11 +43,11 @@ export function NavProjects({
   const [isExpanded, setIsExpanded] = useState(false);
 
   // Transform projects into the expected format
-  const projectItems = projects.map((project) => ({
+  const projectItems = projects.map((project, index) => ({
     name: project.name,
     url: `/project/${project.id}`,
     icon: Building,
-    id: project.id,
+    id: project.id || `project-${index}`, // Fallback if id is missing
   }));
 
   // Determine which projects to show
@@ -102,16 +102,16 @@ export function NavProjects({
                     side={isMobile ? "bottom" : "right"}
                     align={isMobile ? "end" : "start"}
                   >
-                    <DropdownMenuItem>
+                    <DropdownMenuItem key="view">
                       <Folder className="text-muted-foreground" />
                       <span>View Project</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem key="share">
                       <Forward className="text-muted-foreground" />
                       <span>Share Project</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>
+                    <DropdownMenuItem key="delete">
                       <Trash2 className="text-muted-foreground" />
                       <span>Delete Project</span>
                     </DropdownMenuItem>
