@@ -18,10 +18,12 @@ export function ResizablePanelLayout({ children }: ResizablePanelLayoutProps) {
   return (
     <ResizablePanelGroup
       direction="horizontal"
-      className="absolute top-16 left-0 right-0 bottom-0" // top-16 instead of top-0
+      className="absolute top-16 bottom-0"
     >
       <ResizablePanel>
-        <div className="h-full overflow-y-auto">{children}</div>
+        <div className="pb-16">
+          <div className="h-[calc(100vh-4rem)] overflow-y-auto">{children}</div>
+        </div>
       </ResizablePanel>
 
       {isOpen && (
@@ -29,8 +31,8 @@ export function ResizablePanelLayout({ children }: ResizablePanelLayoutProps) {
           <ResizableHandle className="w-0 hover:bg-border/50 transition-colors" />
           <ResizablePanel
             defaultSize={30}
-            minSize={20}
-            maxSize={50}
+            minSize={30}
+            maxSize={30}
             className="h-full max-h-[calc(100vh-4rem)]"
           >
             <div className="h-full">
