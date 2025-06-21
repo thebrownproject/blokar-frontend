@@ -13,8 +13,12 @@ import {
 } from "lucide-react";
 
 export default function DashboardPage() {
-  const { user } = useUser();
-  const { projects, isLoading: projectsLoading } = useProjects();
+  const { user, loading: userLoading } = useUser();
+  const {
+    projects,
+    isLoading: projectsLoading,
+    error: projectsError,
+  } = useProjects();
 
   // Dashboard stats (placeholder for now)
   const stats = {
@@ -35,6 +39,21 @@ export default function DashboardPage() {
         <p className="text-muted-foreground">
           Here&apos;s what&apos;s happening with your projects today.
         </p>
+
+        {/* DEBUG INFO - Remove after fixing */}
+        <div className="bg-yellow-50 border border-yellow-200 rounded p-3 text-sm">
+          <strong>Debug Info:</strong>
+          <br />
+          User Loading: {userLoading ? "Yes" : "No"}
+          <br />
+          User: {user ? user.email : "Not logged in"}
+          <br />
+          Projects Loading: {projectsLoading ? "Yes" : "No"}
+          <br />
+          Projects Error: {projectsError || "None"}
+          <br />
+          Projects Count: {projects.length}
+        </div>
       </div>
 
       {/* Stats Overview - Container Responsive Grid */}
@@ -107,6 +126,8 @@ export default function DashboardPage() {
           <CardContent>
             {projectsLoading ? (
               <p className="text-muted-foreground">Loading projects...</p>
+            ) : projectsError ? (
+              <p className="text-red-500">Error: {projectsError}</p>
             ) : projects.length > 0 ? (
               <div className="space-y-2">
                 {projects.slice(0, 5).map((project) => (

@@ -30,19 +30,14 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { useUser } from "@/hooks/use-user";
 
-export function NavUser({
-  user,
-}: {
-  user?: {
-    name: string;
-    email: string;
-    avatar: string;
-  } | null;
-}) {
+export function NavUser() {
   const { isMobile } = useSidebar();
   const { setTheme } = useTheme();
   const router = useRouter();
+  const { user } = useUser();
+
   const handleLogout = async () => {
     try {
       const response = await fetch("/auth/logout", {
@@ -59,16 +54,9 @@ export function NavUser({
     }
   };
 
-  // Generate avatar fallback from user's name
-  const getAvatarFallback = (name: string) => {
-    return (
-      name
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .toUpperCase()
-        .slice(0, 2) || "U"
-    );
+  // Generate avatar fallback from user's email
+  const getAvatarFallback = (email: string) => {
+    return email.split("@")[0].slice(0, 2).toUpperCase() || "U";
   };
 
   // If no user, show a simplified login prompt
@@ -94,6 +82,10 @@ export function NavUser({
     );
   }
 
+  const displayName =
+    user.user_metadata?.full_name || user.email?.split("@")[0] || "User";
+  const displayEmail = user.email || "";
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -104,14 +96,17 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
+                <AvatarImage
+                  src={user.user_metadata?.avatar_url}
+                  alt={displayName}
+                />
                 <AvatarFallback className="rounded-lg">
-                  {getAvatarFallback(user.name)}
+                  {getAvatarFallback(displayEmail)}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate font-semibold">{displayName}</span>
+                <span className="truncate text-xs">{displayEmail}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -125,14 +120,17 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
+                  <AvatarImage
+                    src={user.user_metadata?.avatar_url}
+                    alt={displayName}
+                  />
                   <AvatarFallback className="rounded-lg">
-                    {getAvatarFallback(user.name)}
+                    {getAvatarFallback(displayEmail)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate font-semibold">{displayName}</span>
+                  <span className="truncate text-xs">{displayEmail}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
