@@ -1,0 +1,79 @@
+"use client";
+
+import { ProjectCard } from "./project-card";
+import type { Project } from "@/services/supabase";
+
+interface ProjectsGridProps {
+  projects: Project[];
+  isLoading: boolean;
+  error: string | null;
+}
+
+export function ProjectsGrid({
+  projects,
+  isLoading,
+  error,
+}: ProjectsGridProps) {
+  if (isLoading) {
+    return (
+      <div className="grid gap-4 auto-fit-cards">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div
+            key={i}
+            className="bg-card rounded-xl border shadow-sm p-6 animate-pulse"
+          >
+            <div className="flex items-center space-x-2 mb-4">
+              <div className="h-5 w-5 bg-muted rounded" />
+              <div className="h-6 w-32 bg-muted rounded" />
+            </div>
+            <div className="space-y-2">
+              <div className="h-4 w-full bg-muted rounded" />
+              <div className="h-4 w-2/3 bg-muted rounded" />
+            </div>
+            <div className="flex justify-between items-center mt-4 pt-2 border-t">
+              <div className="h-4 w-16 bg-muted rounded" />
+              <div className="h-4 w-20 bg-muted rounded" />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-red-500 mb-2">Error loading projects</p>
+        <p className="text-sm text-muted-foreground">{error}</p>
+      </div>
+    );
+  }
+
+  if (projects.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <div className="flex justify-center mb-4">
+          <div className="h-12 w-12 bg-muted rounded-full flex items-center justify-center">
+            <span className="text-2xl">🏗️</span>
+          </div>
+        </div>
+        <h3 className="text-lg font-semibold mb-2">No active projects</h3>
+        <p className="text-muted-foreground">
+          Get started by creating your first project.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid gap-4 auto-fit-cards">
+      {projects.map((project) => (
+        <ProjectCard
+          key={project.id}
+          project={project}
+          taskCount={0} // TODO: Calculate actual task count
+        />
+      ))}
+    </div>
+  );
+}
