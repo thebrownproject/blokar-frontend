@@ -9,8 +9,13 @@ export default function ActiveProjectsPage() {
 
   // Filter for active projects
   const activeProjects = useMemo(() => {
-    return projects.filter((project) => project.status === "active");
+    return projects;
   }, [projects]);
+
+  console.log(
+    "Project statuses:",
+    projects.map((p) => p.status)
+  );
 
   return (
     <div className="flex flex-1 flex-col gap-6 p-6">
