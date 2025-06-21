@@ -16,8 +16,10 @@ import {
   Folder,
   Forward,
   Trash2,
+  Edit,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { usePanel } from "@/hooks/use-panel";
 import type { Project } from "@/services/supabase";
 
 interface ProjectCardProps {
@@ -27,6 +29,23 @@ interface ProjectCardProps {
 
 export function ProjectCard({ project, taskCount = 0 }: ProjectCardProps) {
   const isMobile = useIsMobile();
+  const { openPanel } = usePanel();
+
+  // Format address from project data
+  const formatAddress = (project: Project) => {
+    const parts = [
+      project.address,
+      project.suburb,
+      project.state,
+      project.postcode,
+    ].filter(Boolean);
+
+    return parts.length > 0 ? parts.join(", ") : "Address not provided";
+  };
+
+  const handleEditProject = () => {
+    openPanel("edit-project", { projectId: project.id });
+  };
 
   return (
     <Card className="transition-shadow hover:shadow-md">
@@ -38,9 +57,8 @@ export function ProjectCard({ project, taskCount = 0 }: ProjectCardProps) {
               {project.name}
             </CardTitle>
           </div>
-          {/* Address placeholder - you can replace with actual address field when available */}
           <p className="text-sm text-muted-foreground">
-            Project Location Address
+            {formatAddress(project)}
           </p>
         </div>
 
@@ -63,6 +81,10 @@ export function ProjectCard({ project, taskCount = 0 }: ProjectCardProps) {
             <DropdownMenuItem>
               <Folder className="text-muted-foreground" />
               <span>View Project</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleEditProject}>
+              <Edit className="text-muted-foreground" />
+              <span>Edit Project</span>
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Forward className="text-muted-foreground" />

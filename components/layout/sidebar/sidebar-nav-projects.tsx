@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePanel } from "@/hooks/use-panel";
 import {
   Folder,
   Forward,
@@ -9,6 +10,7 @@ import {
   Loader2,
   ChevronUp,
   Building,
+  Edit,
 } from "lucide-react";
 
 import {
@@ -40,7 +42,12 @@ export function NavProjects({
   error: string | null;
 }) {
   const { isMobile } = useSidebar();
+  const { openPanel } = usePanel();
   const [isExpanded, setIsExpanded] = useState(false);
+
+  const handleEditProject = (projectId: string) => {
+    openPanel("edit-project", { projectId });
+  };
 
   // Transform projects into the expected format
   const projectItems = projects.map((project, index) => ({
@@ -105,6 +112,13 @@ export function NavProjects({
                     <DropdownMenuItem key="view">
                       <Folder className="text-muted-foreground" />
                       <span>View Project</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      key="edit"
+                      onClick={() => handleEditProject(item.id)}
+                    >
+                      <Edit className="text-muted-foreground" />
+                      <span>Edit Project</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem key="share">
                       <Forward className="text-muted-foreground" />

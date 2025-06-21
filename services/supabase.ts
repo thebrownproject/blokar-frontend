@@ -6,6 +6,10 @@ export interface Project {
   description?: string;
   status?: string;
   user_id: string;
+  address: string;
+  suburb?: string;
+  state?: string;
+  postcode?: string;
   created_at: string;
   updated_at: string;
 }
