@@ -49,6 +49,10 @@ export function NavProjects({
     openPanel("edit-project", { projectId });
   };
 
+  const handleViewProject = (projectId: string) => {
+    openPanel("view-project", { projectId });
+  };
+
   // Transform projects into the expected format
   const projectItems = projects.map((project, index) => ({
     name: project.name,
@@ -109,7 +113,10 @@ export function NavProjects({
                     side={isMobile ? "bottom" : "right"}
                     align={isMobile ? "end" : "start"}
                   >
-                    <DropdownMenuItem key="view">
+                    <DropdownMenuItem
+                      key="view"
+                      onClick={() => handleViewProject(item.id)}
+                    >
                       <Folder className="text-muted-foreground" />
                       <span>View Project</span>
                     </DropdownMenuItem>

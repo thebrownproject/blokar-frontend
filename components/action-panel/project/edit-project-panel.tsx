@@ -195,7 +195,7 @@ const PROJECT_FIELDS = [
 ];
 
 export function EditProjectPanel({ data }: EditProjectPanelProps) {
-  const { projects, refetch } = useProjects();
+  const { projects, refetch, updateProject } = useProjects();
   const [project, setProject] = useState<Project | null>(null);
   const [editing, setEditing] = useState<EditingState>({});
   const [editValues, setEditValues] = useState<EditValues>({});
@@ -255,11 +255,17 @@ export function EditProjectPanel({ data }: EditProjectPanelProps) {
         fieldValue = String(fieldValue || "");
       }
 
-      const updateData: Partial<Project> = {
-        [fieldKey]: fieldValue as any,
+      const updateData: Record<string, any> = {
+        [fieldKey]: fieldValue,
         updated_at: new Date().toISOString(),
       };
 
+      // Optimistic update for immediate UI feedback
+      updateProject(project.id, updateData);
+      setProject((prev) => (prev ? { ...prev, ...updateData } : null));
+      setEditing((prev) => ({ ...prev, [fieldKey]: false }));
+
+      // Save to database
       const { error: supabaseError } = await supabase
         .from("projects")
         .update(updateData)
@@ -267,17 +273,15 @@ export function EditProjectPanel({ data }: EditProjectPanelProps) {
 
       if (supabaseError) throw supabaseError;
 
-      // Update local state
-      setProject((prev) => (prev ? { ...prev, ...updateData } : null));
-      setEditing((prev) => ({ ...prev, [fieldKey]: false }));
-
-      // Refetch to ensure consistency
+      // Refetch to ensure all components have latest data
       await refetch();
     } catch (error) {
       console.error("Failed to update field:", error);
       setError(
         error instanceof Error ? error.message : "Failed to update field"
       );
+      // Revert optimistic update on error
+      await refetch();
     } finally {
       setSaving((prev) => ({ ...prev, [fieldKey]: false }));
     }
