@@ -25,11 +25,13 @@ import {
   Building,
   User,
   Percent,
+  Trash2,
 } from "lucide-react";
+import { DeleteProjectDialog } from "../../projects/delete-project-dialog";
 import type { Project } from "@/services/supabase";
 
 interface EditProjectPanelProps {
-  data?: { projectId: string };
+  data?: { projectId: string } | Record<string, unknown>;
 }
 
 interface EditingState {
@@ -201,11 +203,16 @@ export function EditProjectPanel({ data }: EditProjectPanelProps) {
   const [editValues, setEditValues] = useState<EditValues>({});
   const [saving, setSaving] = useState<EditingState>({});
   const [error, setError] = useState<string | null>(null);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   // Find the specific project
   useEffect(() => {
-    if (data?.projectId && projects.length > 0) {
-      const foundProject = projects.find((p) => p.id === data.projectId);
+    const projectId =
+      data && typeof data === "object" && "projectId" in data
+        ? (data.projectId as string)
+        : undefined;
+    if (projectId && projects.length > 0) {
+      const foundProject = projects.find((p) => p.id === projectId);
       if (foundProject) {
         setProject(foundProject);
         // Initialize edit values
@@ -217,7 +224,7 @@ export function EditProjectPanel({ data }: EditProjectPanelProps) {
         setEditValues(initialValues);
       }
     }
-  }, [data?.projectId, projects]);
+  }, [data, projects]);
 
   const handleStartEdit = (fieldKey: string) => {
     setEditing((prev) => ({ ...prev, [fieldKey]: true }));
@@ -464,7 +471,37 @@ export function EditProjectPanel({ data }: EditProjectPanelProps) {
             </div>
           );
         })}
+
+        {/* Delete Section */}
+        <div className="pt-6 border-t border-border">
+          <div className="space-y-2">
+            <Label className="text-sm font-medium text-destructive">
+              Danger Zone
+            </Label>
+            <p className="text-sm text-muted-foreground">
+              Permanently delete this project and all associated data. This
+              action cannot be undone.
+            </p>
+            <Button
+              variant="destructive"
+              onClick={() => setShowDeleteDialog(true)}
+              className="w-full"
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              Delete Project
+            </Button>
+          </div>
+        </div>
       </div>
+
+      {/* Delete Dialog */}
+      {project && (
+        <DeleteProjectDialog
+          project={project}
+          open={showDeleteDialog}
+          onOpenChange={setShowDeleteDialog}
+        />
+      )}
     </ActionPanelCard>
   );
 }

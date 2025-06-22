@@ -1,16 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { usePanel } from "@/hooks/use-panel";
 import {
   Folder,
-  Forward,
   MoreHorizontal,
-  Trash2,
   Loader2,
   ChevronUp,
   Building,
   Edit,
+  ListTodo,
+  Users,
+  FileText,
 } from "lucide-react";
 
 import {
@@ -37,20 +39,26 @@ export function NavProjects({
   isLoading,
   error,
 }: {
-  projects: any[];
+  projects: Array<{ id: string; name: string; [key: string]: unknown }>;
   isLoading: boolean;
   error: string | null;
 }) {
   const { isMobile } = useSidebar();
+  const router = useRouter();
   const { openPanel } = usePanel();
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const handleEditProject = (projectId: string) => {
-    openPanel("edit-project", { projectId });
+  const handleViewProject = (projectId: string) => {
+    router.push(`/projects/${projectId}`);
   };
 
-  const handleViewProject = (projectId: string) => {
-    openPanel("view-project", { projectId });
+  const handleProjectDetails = (projectId: string) => {
+    openPanel("project-details", { projectId });
+  };
+
+  const handlePlaceholder = (feature: string) => {
+    console.log(`${feature} feature coming soon`);
+    // TODO: Show toast notification when toast component is available
   };
 
   // Transform projects into the expected format
@@ -121,20 +129,33 @@ export function NavProjects({
                       <span>View Project</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      key="edit"
-                      onClick={() => handleEditProject(item.id)}
+                      key="details"
+                      onClick={() => handleProjectDetails(item.id)}
                     >
                       <Edit className="text-muted-foreground" />
-                      <span>Edit Project</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem key="share">
-                      <Forward className="text-muted-foreground" />
-                      <span>Share Project</span>
+                      <span>Project Details</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem key="delete">
-                      <Trash2 className="text-muted-foreground" />
-                      <span>Delete Project</span>
+                    <DropdownMenuItem
+                      key="tasks"
+                      onClick={() => handlePlaceholder("Project Tasks")}
+                    >
+                      <ListTodo className="text-muted-foreground" />
+                      <span>Project Tasks</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      key="team"
+                      onClick={() => handlePlaceholder("Project Team")}
+                    >
+                      <Users className="text-muted-foreground" />
+                      <span>Project Team</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      key="documents"
+                      onClick={() => handlePlaceholder("Project Documents")}
+                    >
+                      <FileText className="text-muted-foreground" />
+                      <span>Project Documents</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

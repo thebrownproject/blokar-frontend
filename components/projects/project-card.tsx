@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   DropdownMenu,
@@ -15,9 +16,9 @@ import {
   ListTodo,
   MoreHorizontal,
   Folder,
-  Forward,
-  Trash2,
   Edit,
+  Users,
+  FileText,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { usePanel } from "@/hooks/use-panel";
@@ -31,6 +32,7 @@ interface ProjectCardProps {
 
 export function ProjectCard({ project, taskCount = 0 }: ProjectCardProps) {
   const isMobile = useIsMobile();
+  const router = useRouter();
   const { openPanel } = usePanel();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
@@ -46,16 +48,17 @@ export function ProjectCard({ project, taskCount = 0 }: ProjectCardProps) {
     return parts.length > 0 ? parts.join(", ") : "Address not provided";
   };
 
-  const handleEditProject = () => {
-    openPanel("edit-project", { projectId: project.id });
-  };
-
   const handleViewProject = () => {
-    openPanel("view-project", { projectId: project.id });
+    router.push(`/projects/${project.id}`);
   };
 
-  const handleDeleteProject = () => {
-    setShowDeleteDialog(true);
+  const handleProjectDetails = () => {
+    openPanel("project-details", { projectId: project.id });
+  };
+
+  const handlePlaceholder = (feature: string) => {
+    console.log(`${feature} feature coming soon`);
+    // TODO: Show toast notification when toast component is available
   };
 
   return (
@@ -94,21 +97,28 @@ export function ProjectCard({ project, taskCount = 0 }: ProjectCardProps) {
                 <Folder className="text-muted-foreground" />
                 <span>View Project</span>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleEditProject}>
+              <DropdownMenuItem onClick={handleProjectDetails}>
                 <Edit className="text-muted-foreground" />
-                <span>Edit Project</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Forward className="text-muted-foreground" />
-                <span>Share Project</span>
+                <span>Project Details</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
-                onClick={handleDeleteProject}
-                className="text-destructive focus:text-destructive"
+                onClick={() => handlePlaceholder("Project Tasks")}
               >
-                <Trash2 className="text-muted-foreground" />
-                <span>Delete Project</span>
+                <ListTodo className="text-muted-foreground" />
+                <span>Project Tasks</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handlePlaceholder("Project Team")}
+              >
+                <Users className="text-muted-foreground" />
+                <span>Project Team</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handlePlaceholder("Project Documents")}
+              >
+                <FileText className="text-muted-foreground" />
+                <span>Project Documents</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
