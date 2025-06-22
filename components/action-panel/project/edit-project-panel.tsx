@@ -255,7 +255,7 @@ export function EditProjectPanel({ data }: EditProjectPanelProps) {
         fieldValue = String(fieldValue || "");
       }
 
-      const updateData: Record<string, any> = {
+      const updateData: Partial<Project> = {
         [fieldKey]: fieldValue,
         updated_at: new Date().toISOString(),
       };
@@ -324,7 +324,7 @@ export function EditProjectPanel({ data }: EditProjectPanelProps) {
     if (field.type === "select" && field.options) {
       return (
         <Select
-          value={value}
+          value={String(value || "")}
           onValueChange={(newValue) =>
             setEditValues((prev) => ({ ...prev, [field.key]: newValue }))
           }

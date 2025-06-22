@@ -20,6 +20,10 @@ interface ProjectsContextType {
   error: string | null;
   refetch: () => Promise<void>;
   updateProject: (projectId: string, updates: Partial<Project>) => void;
+  addProject: (
+    projectData: Omit<Project, "id" | "user_id" | "created_at" | "updated_at">
+  ) => Promise<Project>;
+  deleteProject: (projectId: string) => Promise<void>;
 }
 
 const ProjectsContext = createContext<ProjectsContextType | undefined>(
@@ -110,12 +114,116 @@ export function ProjectsProvider({ children }: { children: React.ReactNode }) {
     []
   );
 
+  // Optimistic add project function for new project creation
+  const addProject = useCallback(
+    async (
+      projectData: Omit<Project, "id" | "user_id" | "created_at" | "updated_at">
+    ): Promise<Project> => {
+      if (!user) {
+        throw new Error("User must be authenticated to create projects");
+      }
+
+      // Generate temporary ID for optimistic update
+      const tempId = crypto.randomUUID();
+      const now = new Date().toISOString();
+
+      // Create optimistic project with temporary ID
+      const optimisticProject: Project = {
+        id: tempId,
+        created_at: now,
+        updated_at: now,
+        user_id: user.id,
+        ...projectData,
+      };
+
+      // Optimistically add to UI immediately
+      setProjects((prevProjects) => [optimisticProject, ...prevProjects]);
+
+      try {
+        // Save to database
+        const { data, error: supabaseError } = await supabase
+          .from("projects")
+          .insert({
+            user_id: user.id,
+            ...projectData,
+          })
+          .select()
+          .single();
+
+        if (supabaseError) throw supabaseError;
+
+        // Replace optimistic project with real data from database
+        setProjects((prevProjects) =>
+          prevProjects.map((project) =>
+            project.id === tempId ? data : project
+          )
+        );
+
+        return data;
+      } catch (error) {
+        // Remove optimistic project on error
+        setProjects((prevProjects) =>
+          prevProjects.filter((project) => project.id !== tempId)
+        );
+        throw error;
+      }
+    },
+    [user]
+  );
+
+  // Optimistic delete project function for project deletion
+  const deleteProject = useCallback(
+    async (projectId: string): Promise<void> => {
+      if (!user) {
+        throw new Error("User must be authenticated to delete projects");
+      }
+
+      // Store the project for potential restoration on error
+      const projectToDelete = projects.find((p) => p.id === projectId);
+      if (!projectToDelete) {
+        throw new Error("Project not found");
+      }
+
+      // Optimistically remove from UI immediately
+      setProjects((prevProjects) =>
+        prevProjects.filter((project) => project.id !== projectId)
+      );
+
+      try {
+        // Delete from database
+        const { error: supabaseError } = await supabase
+          .from("projects")
+          .delete()
+          .eq("id", projectId);
+
+        if (supabaseError) throw supabaseError;
+
+        // Successfully deleted - no need to update UI as it's already removed
+      } catch (error) {
+        // Restore project on error by re-adding it to the list
+        setProjects((prevProjects) => {
+          // Insert the project back in its original position (sorted by created_at)
+          const newProjects = [...prevProjects, projectToDelete];
+          return newProjects.sort(
+            (a, b) =>
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime()
+          );
+        });
+        throw error;
+      }
+    },
+    [user, projects]
+  );
+
   const value: ProjectsContextType = {
     projects,
     isLoading,
     error,
     refetch,
     updateProject,
+    addProject,
+    deleteProject,
   };
 
   return (

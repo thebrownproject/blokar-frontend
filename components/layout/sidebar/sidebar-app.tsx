@@ -219,6 +219,7 @@ export function SidebarApp({ ...props }: React.ComponentProps<typeof Sidebar>) {
     name: project.name,
     url: `/projects/${project.id}`,
     icon: getProjectIcon(project.type),
+    id: project.id,
   }));
 
   return (
