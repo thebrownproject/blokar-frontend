@@ -6,6 +6,18 @@ export interface Project {
   description?: string;
   status?: string;
   user_id: string;
+  organization_id?: string;
+  address: string;
+  suburb?: string;
+  state?: string;
+  postcode?: string;
+  // Additional project fields
+  building_class?: string;
+  project_type?: string;
+  project_scale?: string;
+  progress?: number;
+  council_name?: string;
+  council_contact?: string;
   created_at: string;
   updated_at: string;
 }

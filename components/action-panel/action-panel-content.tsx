@@ -23,6 +23,8 @@ export function ActionPanelContent() {
         return <NewProjectPanel />;
       case "edit-project":
         return <EditProjectPanel data={panelData} />;
+      case "project-details":
+        return <EditProjectPanel data={panelData} />;
       case "view-project":
         return <ViewProjectPanel data={panelData} />;
 

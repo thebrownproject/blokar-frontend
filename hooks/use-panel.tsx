@@ -7,6 +7,7 @@ type PanelType =
   | "ai-assistant"
   | "new-project"
   | "edit-project"
+  | "project-details"
   | "view-project"
   | "new-task"
   | "edit-task"
@@ -22,10 +23,10 @@ type PanelType =
 interface PanelContextType {
   isOpen: boolean;
   panelType: PanelType;
-  panelData?: any; // For passing data to panels (e.g., item to edit)
-  openPanel: (type: PanelType, data?: any) => void;
+  panelData?: Record<string, unknown>; // For passing data to panels (e.g., item to edit)
+  openPanel: (type: PanelType, data?: Record<string, unknown>) => void;
   closePanel: () => void;
-  togglePanel: (type: PanelType, data?: any) => void;
+  togglePanel: (type: PanelType, data?: Record<string, unknown>) => void;
 }
 
 const PanelContext = React.createContext<PanelContextType | undefined>(
@@ -35,13 +36,18 @@ const PanelContext = React.createContext<PanelContextType | undefined>(
 export function PanelProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [panelType, setPanelType] = React.useState<PanelType>(null);
-  const [panelData, setPanelData] = React.useState<any>(undefined);
+  const [panelData, setPanelData] = React.useState<
+    Record<string, unknown> | undefined
+  >(undefined);
 
-  const openPanel = React.useCallback((type: PanelType, data?: any) => {
-    setPanelType(type);
-    setPanelData(data);
-    setIsOpen(true);
-  }, []);
+  const openPanel = React.useCallback(
+    (type: PanelType, data?: Record<string, unknown>) => {
+      setPanelType(type);
+      setPanelData(data);
+      setIsOpen(true);
+    },
+    []
+  );
 
   const closePanel = React.useCallback(() => {
     setIsOpen(false);
@@ -50,7 +56,7 @@ export function PanelProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const togglePanel = React.useCallback(
-    (type: PanelType, data?: any) => {
+    (type: PanelType, data?: Record<string, unknown>) => {
       if (isOpen && panelType === type) {
         closePanel();
       } else {
