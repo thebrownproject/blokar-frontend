@@ -27,7 +27,7 @@ export function ActionPanelCard({
   const { closePanel } = usePanel();
 
   return (
-    <div className="h-full pr-4 pt-4 pb-4">
+    <div className="h-full pr-6 pt-6 pb-6">
       <Card className={cn("h-full flex flex-col", className)}>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
           <div className="flex items-center gap-2">

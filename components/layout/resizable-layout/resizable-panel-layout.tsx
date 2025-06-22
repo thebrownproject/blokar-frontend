@@ -22,23 +22,21 @@ export function ResizablePanelLayout({ children }: ResizablePanelLayoutProps) {
     >
       <ResizablePanel>
         <div className="pb-16">
-          <div className="h-[calc(100vh-4rem)] overflow-y-auto">{children}</div>
+          <div className="h-[calc(100vh-4rem)] overflow-y-auto">
+            <div className="max-w-6xl mx-auto">{children}</div>
+          </div>
         </div>
       </ResizablePanel>
 
       {isOpen && (
         <>
-          <ResizableHandle className="w-0 hover:bg-border/50 transition-colors" />
-          <ResizablePanel
-            defaultSize={30}
-            minSize={30}
-            maxSize={30}
-            className="h-full max-h-[calc(100vh-4rem)]"
-          >
-            <div className="h-full">
-              <ActionPanelContent />
-            </div>
-          </ResizablePanel>
+          <div className="w-[500px]">
+            <ResizablePanel className="h-full max-h-[calc(100vh-4rem)]">
+              <div className="h-full">
+                <ActionPanelContent />
+              </div>
+            </ResizablePanel>
+          </div>
         </>
       )}
     </ResizablePanelGroup>
