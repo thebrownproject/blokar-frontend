@@ -27,6 +27,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 interface ProjectDashboardPageProps {
@@ -59,7 +60,9 @@ export default function ProjectDashboardPage({
             Error Loading Project
           </h1>
           <p className="text-muted-foreground">
-            {error.message || "Something went wrong"}
+            {typeof error === "string"
+              ? error
+              : error?.message || "Something went wrong"}
           </p>
         </div>
         <Button asChild>
@@ -75,7 +78,7 @@ export default function ProjectDashboardPage({
   }
 
   const handleEditProject = () => {
-    openPanel("edit-project", { projectId: project.id });
+    openPanel("project-details", { projectId: project.id });
   };
 
   const handleAddTask = () => {
@@ -120,22 +123,6 @@ export default function ProjectDashboardPage({
 
   return (
     <div className="flex flex-1 flex-col gap-6 p-6">
-      {/* Navigation Header */}
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" asChild>
-          <Link href="/projects/active" className="flex items-center gap-2">
-            <ArrowLeft className="h-4 w-4" />
-            Back to Projects
-          </Link>
-        </Button>
-        <Separator orientation="vertical" className="h-6" />
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <span>Projects</span>
-          <span>/</span>
-          <span className="text-foreground font-medium">{project.name}</span>
-        </div>
-      </div>
-
       {/* Hero Project Card */}
       <Card className="relative overflow-hidden">
         <CardHeader className="pb-4">
@@ -167,7 +154,7 @@ export default function ProjectDashboardPage({
               </Badge>
               <Button variant="outline" size="sm" onClick={handleEditProject}>
                 <Edit className="h-4 w-4 mr-2" />
-                Edit Project
+                Project Details
               </Button>
             </div>
           </div>

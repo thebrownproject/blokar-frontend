@@ -48,7 +48,7 @@ const data = {
       items: [
         {
           title: "Overview",
-          url: "/dashboard/overview",
+          url: "/dashboard",
         },
         {
           title: "Project Status",
@@ -191,34 +191,17 @@ const getProjectIcon = (projectType: string) => {
 };
 
 export function SidebarApp({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user, loading: userLoading } = useUser();
   const {
     projects,
-    isLoading: projectsLoading,
+    loading: projectsLoading,
     error: projectsError,
   } = useProjects();
-
-  // Create user object for NavUser component with fallback values
-  const userData =
-    user && !userLoading
-      ? {
-          name: user.user_metadata?.name || user.email?.split("@")[0] || "User",
-          email: user.email || "",
-          avatar: user.user_metadata?.avatar_url || "/avatars/default.jpg",
-        }
-      : userLoading
-      ? {
-          name: "Loading...",
-          email: "loading...",
-          avatar: "/avatars/default.jpg",
-        }
-      : null;
 
   // Transform API projects to the format expected by NavProjects
   const projectsData = projects.map((project) => ({
     name: project.name,
     url: `/projects/${project.id}`,
-    icon: getProjectIcon(project.type),
+    icon: getProjectIcon(project.project_type || ""),
     id: project.id,
   }));
 

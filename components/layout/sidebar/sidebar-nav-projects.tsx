@@ -103,11 +103,12 @@ export function NavProjects({
           <>
             {visibleProjects.map((item) => (
               <SidebarMenuItem key={item.id}>
-                <SidebarMenuButton asChild>
-                  <a href={item.url}>
-                    <item.icon />
-                    <span>{item.name}</span>
-                  </a>
+                <SidebarMenuButton
+                  onClick={() => router.push(item.url)}
+                  className="cursor-pointer"
+                >
+                  <item.icon />
+                  <span>{item.name}</span>
                 </SidebarMenuButton>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -165,7 +166,7 @@ export function NavProjects({
             {hasMoreProjects && (
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  className="text-sidebar-foreground/70"
+                  className="text-sidebar-foreground/70 cursor-pointer"
                   onClick={() => setIsExpanded(!isExpanded)}
                 >
                   {isExpanded ? (

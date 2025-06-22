@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useProjectsContext } from "@/hooks/projects-context";
 import {
   Breadcrumb,
   BreadcrumbEllipsis,
@@ -20,6 +21,7 @@ import {
 
 export function TopBarBreadcrumbs() {
   const pathname = usePathname();
+  const { projects } = useProjectsContext();
 
   // Generate breadcrumb items from pathname
   const pathSegments = pathname.split("/").filter(Boolean);
@@ -27,8 +29,24 @@ export function TopBarBreadcrumbs() {
   // Create breadcrumb items with proper titles
   const breadcrumbItems = pathSegments.map((segment, index) => {
     const href = "/" + pathSegments.slice(0, index + 1).join("/");
-    const title =
+    let title =
       segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, " ");
+
+    // Check if this segment looks like a UUID and we're in a project context
+    const isUUID =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        segment
+      );
+    if (
+      isUUID &&
+      pathSegments[index - 1] === "projects" &&
+      projects.length > 0
+    ) {
+      const project = projects.find((p) => p.id === segment);
+      if (project) {
+        title = project.name;
+      }
+    }
 
     return {
       title,
@@ -37,11 +55,8 @@ export function TopBarBreadcrumbs() {
     };
   });
 
-  // Always include Home as first item
-  const allItems = [
-    { title: "Dashboard", href: "/", isLast: pathSegments.length === 0 },
-    ...breadcrumbItems,
-  ];
+  // Use breadcrumb items without Dashboard prefix
+  const allItems = breadcrumbItems;
 
   // Show ellipsis if more than 3 items
   const shouldShowEllipsis = allItems.length > 3;
