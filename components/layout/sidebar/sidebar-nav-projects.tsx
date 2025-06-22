@@ -56,7 +56,7 @@ export function NavProjects({
   // Transform projects into the expected format
   const projectItems = projects.map((project, index) => ({
     name: project.name,
-    url: `/project/${project.id}`,
+    url: `/projects/${project.id}`,
     icon: Building,
     id: project.id || `project-${index}`, // Fallback if id is missing
   }));
