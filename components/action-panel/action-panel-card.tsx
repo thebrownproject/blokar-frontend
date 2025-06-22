@@ -51,7 +51,9 @@ export function ActionPanelCard({
             </TooltipContent>
           </Tooltip>
         </CardHeader>
-        <CardContent className="flex-1 p-0 px-6 pb-6">{children}</CardContent>
+        <CardContent className="flex-1 p-0 px-6 pb-6 overflow-y-auto">
+          {children}
+        </CardContent>
       </Card>
     </div>
   );

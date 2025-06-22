@@ -47,6 +47,10 @@ export function ProjectCard({ project, taskCount = 0 }: ProjectCardProps) {
     openPanel("edit-project", { projectId: project.id });
   };
 
+  const handleViewProject = () => {
+    openPanel("view-project", { projectId: project.id });
+  };
+
   return (
     <Card className="transition-shadow hover:shadow-md">
       <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-4">
@@ -78,7 +82,7 @@ export function ProjectCard({ project, taskCount = 0 }: ProjectCardProps) {
             side={isMobile ? "bottom" : "right"}
             align={isMobile ? "end" : "start"}
           >
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleViewProject}>
               <Folder className="text-muted-foreground" />
               <span>View Project</span>
             </DropdownMenuItem>

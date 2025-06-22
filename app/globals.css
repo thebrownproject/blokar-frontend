@@ -124,7 +124,7 @@
 /* Add these responsive grid utilities in the utilities layer */
 @layer utilities {
   .auto-fit-cards {
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
   }
 
   .auto-fit-large-cards {
