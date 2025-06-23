@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useTasks } from "@/hooks/use-tasks";
+import { usePanel } from "@/hooks/use-panel";
 import { createClient } from "@/utils/supabase/client";
 import {
   Edit,
@@ -117,6 +118,7 @@ const TASK_FIELDS = [
 
 export function EditTaskPanel({ data }: EditTaskPanelProps) {
   const { tasks, refetch, updateTask } = useTasks();
+  const { closePanel } = usePanel();
   const [task, setTask] = useState<TaskWithProject | null>(null);
   const [editing, setEditing] = useState<EditingState>({});
   const [editValues, setEditValues] = useState<EditValues>({});
@@ -484,6 +486,10 @@ export function EditTaskPanel({ data }: EditTaskPanelProps) {
         task={task}
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
+        onSuccess={() => {
+          closePanel();
+          setShowDeleteDialog(false);
+        }}
       />
     </ActionPanelCard>
   );

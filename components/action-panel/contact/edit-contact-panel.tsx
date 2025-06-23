@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { useContacts } from "@/hooks/use-contacts";
 import { useProjects } from "@/hooks/use-projects";
+import { usePanel } from "@/hooks/use-panel";
 import { createClient } from "@/utils/supabase/client";
 import {
   UserPen,
@@ -122,6 +123,7 @@ const CONTACT_FIELDS = [
 export function EditContactPanel({ data }: EditContactPanelProps) {
   const { contacts, refetch, updateContact } = useContacts();
   const { projects } = useProjects();
+  const { closePanel } = usePanel();
   const [contact, setContact] = useState<ContactWithProject | null>(null);
   const [editing, setEditing] = useState<EditingState>({});
   const [editValues, setEditValues] = useState<EditValues>({});
@@ -517,6 +519,10 @@ export function EditContactPanel({ data }: EditContactPanelProps) {
         contact={contact}
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
+        onSuccess={() => {
+          closePanel();
+          setShowDeleteDialog(false);
+        }}
       />
     </ActionPanelCard>
   );

@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useProjects } from "@/hooks/use-projects";
+import { usePanel } from "@/hooks/use-panel";
 import { createClient } from "@/utils/supabase/client";
 import {
   PencilLine,
@@ -198,6 +199,7 @@ const PROJECT_FIELDS = [
 
 export function EditProjectPanel({ data }: EditProjectPanelProps) {
   const { projects, refetch, updateProject } = useProjects();
+  const { closePanel } = usePanel();
   const [project, setProject] = useState<Project | null>(null);
   const [editing, setEditing] = useState<EditingState>({});
   const [editValues, setEditValues] = useState<EditValues>({});
@@ -500,6 +502,10 @@ export function EditProjectPanel({ data }: EditProjectPanelProps) {
           project={project}
           open={showDeleteDialog}
           onOpenChange={setShowDeleteDialog}
+          onSuccess={() => {
+            closePanel();
+            setShowDeleteDialog(false);
+          }}
         />
       )}
     </ActionPanelCard>

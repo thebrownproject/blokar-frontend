@@ -19,12 +19,14 @@ interface DeleteContactDialogProps {
   contact: ContactWithProject | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSuccess?: () => void;
 }
 
 export function DeleteContactDialog({
   contact,
   open,
   onOpenChange,
+  onSuccess,
 }: DeleteContactDialogProps) {
   const { deleteContact } = useContacts();
   const [isDeleting, setIsDeleting] = useState(false);
@@ -40,6 +42,8 @@ export function DeleteContactDialog({
       await deleteContact(contact.id);
       // Close dialog on successful deletion
       onOpenChange(false);
+      // Notify parent to close action panel
+      onSuccess?.();
     } catch (error) {
       console.error("Failed to delete contact:", error);
       setError(

@@ -19,12 +19,14 @@ interface DeleteTaskDialogProps {
   task: Task | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSuccess?: () => void;
 }
 
 export function DeleteTaskDialog({
   task,
   open,
   onOpenChange,
+  onSuccess,
 }: DeleteTaskDialogProps) {
   const { deleteTask } = useTasks();
   const [isDeleting, setIsDeleting] = useState(false);
@@ -40,6 +42,8 @@ export function DeleteTaskDialog({
       await deleteTask(task.id);
       // Close dialog on successful deletion
       onOpenChange(false);
+      // Notify parent to close action panel
+      onSuccess?.();
     } catch (error) {
       console.error("Failed to delete task:", error);
       setError(

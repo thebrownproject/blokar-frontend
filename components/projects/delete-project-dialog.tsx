@@ -19,12 +19,14 @@ interface DeleteProjectDialogProps {
   project: Project | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSuccess?: () => void;
 }
 
 export function DeleteProjectDialog({
   project,
   open,
   onOpenChange,
+  onSuccess,
 }: DeleteProjectDialogProps) {
   const { deleteProject } = useProjects();
   const [isDeleting, setIsDeleting] = useState(false);
@@ -40,6 +42,8 @@ export function DeleteProjectDialog({
       await deleteProject(project.id);
       // Close dialog on successful deletion
       onOpenChange(false);
+      // Notify parent to close action panel
+      onSuccess?.();
     } catch (error) {
       console.error("Failed to delete project:", error);
       setError(
