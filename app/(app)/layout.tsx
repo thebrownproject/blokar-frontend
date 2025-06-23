@@ -5,6 +5,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { PanelProvider } from "@/hooks/use-panel";
 import { ProjectsProvider } from "@/hooks/projects-context";
 import { TasksProvider } from "@/hooks/tasks-context";
+import { ContactsProvider } from "@/hooks/contacts-context";
 
 export default function AppLayout({
   children,
@@ -14,15 +15,17 @@ export default function AppLayout({
   return (
     <ProjectsProvider>
       <TasksProvider>
-        <PanelProvider>
-          <SidebarProvider>
-            <SidebarApp />
-            <SidebarInset>
-              <TopBarApp />
-              <ResizablePanelLayout>{children}</ResizablePanelLayout>
-            </SidebarInset>
-          </SidebarProvider>
-        </PanelProvider>
+        <ContactsProvider>
+          <PanelProvider>
+            <SidebarProvider>
+              <SidebarApp />
+              <SidebarInset>
+                <TopBarApp />
+                <ResizablePanelLayout>{children}</ResizablePanelLayout>
+              </SidebarInset>
+            </SidebarProvider>
+          </PanelProvider>
+        </ContactsProvider>
       </TasksProvider>
     </ProjectsProvider>
   );
