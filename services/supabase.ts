@@ -38,11 +38,18 @@ export interface Task {
   id: string;
   title: string;
   description?: string;
-  status: "todo" | "in_progress" | "completed";
-  priority: "low" | "medium" | "high";
+  task_type?: string;
+  status: string;
+  priority: string;
   due_date?: string;
+  completed_at?: string;
+  assigned_to?: string;
+  assignee?: string;
+  progress?: number;
+  estimated_hours?: number;
+  notes?: string;
   project_id?: string;
-  user_id: string;
+  user_id?: string;
   created_at: string;
   updated_at: string;
 }
