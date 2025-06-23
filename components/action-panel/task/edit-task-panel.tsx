@@ -28,6 +28,7 @@ import {
   FileText,
   Trash2,
 } from "lucide-react";
+import { DeleteTaskDialog } from "../../tasks/delete-task-dialog";
 import type { TaskWithProject } from "@/hooks/tasks-context";
 
 interface EditTaskPanelProps {
@@ -115,13 +116,13 @@ const TASK_FIELDS = [
 ];
 
 export function EditTaskPanel({ data }: EditTaskPanelProps) {
-  const { tasks, refetch, updateTask, deleteTask } = useTasks();
+  const { tasks, refetch, updateTask } = useTasks();
   const [task, setTask] = useState<TaskWithProject | null>(null);
   const [editing, setEditing] = useState<EditingState>({});
   const [editValues, setEditValues] = useState<EditValues>({});
   const [saving, setSaving] = useState<EditingState>({});
   const [error, setError] = useState<string | null>(null);
-  const [deleting, setDeleting] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   // Find the specific task
   useEffect(() => {
@@ -211,23 +212,8 @@ export function EditTaskPanel({ data }: EditTaskPanelProps) {
     }
   };
 
-  const handleDeleteTask = async () => {
-    if (!task) return;
-
-    setDeleting(true);
-    setError(null);
-
-    try {
-      await deleteTask(task.id);
-      // Task panel will be closed automatically when task is deleted
-    } catch (error) {
-      console.error("Failed to delete task:", error);
-      setError(
-        error instanceof Error ? error.message : "Failed to delete task"
-      );
-    } finally {
-      setDeleting(false);
-    }
+  const handleDeleteTask = () => {
+    setShowDeleteDialog(true);
   };
 
   const getStatusDisplay = (status: string) => {
@@ -485,24 +471,20 @@ export function EditTaskPanel({ data }: EditTaskPanelProps) {
             <Button
               variant="destructive"
               onClick={handleDeleteTask}
-              disabled={deleting}
               className="w-full"
             >
-              {deleting ? (
-                <>
-                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent mr-2" />
-                  Deleting Task...
-                </>
-              ) : (
-                <>
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Delete Task
-                </>
-              )}
+              <Trash2 className="h-4 w-4 mr-2" />
+              Delete Task
             </Button>
           </div>
         </div>
       </div>
+
+      <DeleteTaskDialog
+        task={task}
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+      />
     </ActionPanelCard>
   );
 }
