@@ -16,10 +16,7 @@ export function ResizablePanelLayout({ children }: ResizablePanelLayoutProps) {
   const { isOpen } = usePanel();
 
   return (
-    <ResizablePanelGroup
-      direction="horizontal"
-      className="absolute top-16 bottom-0"
-    >
+    <ResizablePanelGroup direction="horizontal" className="">
       <ResizablePanel>
         <div className="pb-16">
           <div className="h-[calc(100vh-4rem)] overflow-y-auto">
