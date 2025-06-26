@@ -141,20 +141,28 @@ export async function projectAgentHandler(
     // Determine which tools to include based on intent
     const tools = getToolsForIntent(intent.intent);
 
+    // Collect tool results as they happen
+    const collectedToolResults: Array<{
+      toolCallId: string;
+      toolName: string;
+      args: unknown;
+      result: unknown;
+    }> = [];
+
     // Generate response using Claude with appropriate tools
     const result = await streamText({
       model: anthropic("claude-3-5-sonnet-20241022"),
       system: PROJECT_AGENT_SYSTEM_PROMPT,
       messages: [
         // Include relevant conversation history
-        ...conversationHistory
+        ...(conversationHistory || [])
           .slice(-5)
           .map((msg: { role: string; content: string }) => ({
-            role: msg.role,
+            role: msg.role as "system" | "user" | "assistant",
             content: msg.content,
           })),
         {
-          role: "user",
+          role: "user" as const,
           content: `${userMessage}
 
 Context: This request has been classified as "${intent.intent}" with ${(
@@ -172,33 +180,40 @@ Please handle this request using the appropriate tools and provide a helpful res
       ],
       tools,
       maxSteps: 3, // Allow multi-step workflows
+      onStepFinish: (step) => {
+        // Collect tool results as they happen
+        if (step.toolResults) {
+          collectedToolResults.push(...step.toolResults);
+        }
+      },
     });
 
     // Stream the response and collect tool results
     let responseText = "";
-    let toolResults: any[] = [];
 
     for await (const delta of result.textStream) {
       responseText += delta;
     }
 
-    // Collect tool call results
-    if (result.toolResults) {
-      toolResults = result.toolResults;
-    }
+    // Wait for all tool results to be available (in case some weren't captured in onStepFinish)
+    const finalToolResults = await result.toolResults;
+
+    // Use the final tool results or collected results
+    const allToolResults =
+      finalToolResults.length > 0 ? finalToolResults : collectedToolResults;
 
     const processingTime = Date.now() - startTime;
 
     return {
       success: true,
       message: responseText || "I've processed your project request.",
-      data: extractDataFromToolResults(toolResults),
+      data: extractDataFromToolResults(allToolResults),
       metadata: {
         agent: "project",
         intent: intent.intent,
         confidence: intent.confidence,
         processingTime,
-        toolsUsed: toolResults.map((tr) => tr.toolName),
+        toolsUsed: allToolResults.map((tr) => tr.toolName),
       },
       suggestions: generateSuggestions(intent.intent),
     };
@@ -291,28 +306,47 @@ function getToolsForIntent(intent: string) {
  * LEARNING: Extract structured data from tool results
  * Useful for further processing or UI updates
  */
-function extractDataFromToolResults(toolResults: any[] | any | undefined): any {
-  const data: any = {
-    projects: [],
-    statistics: null,
-    operations: [],
+function extractDataFromToolResults(
+  toolResults:
+    | Array<{
+        toolCallId: string;
+        toolName: string;
+        args: unknown;
+        result: unknown;
+      }>
+    | Array<{
+        toolCallId: string;
+        toolName: string;
+        args: unknown;
+        result: unknown;
+      }>
+): {
+  projects: unknown[];
+  statistics: unknown;
+  operations: Array<{
+    operation: string;
+    success: boolean;
+    details: unknown;
+  }>;
+} {
+  const data = {
+    projects: [] as unknown[],
+    statistics: null as unknown,
+    operations: [] as Array<{
+      operation: string;
+      success: boolean;
+      details: unknown;
+    }>,
   };
-
-  // Ensure toolResults is always iterable - CRITICAL FIX
-  const resultsArray = Array.isArray(toolResults)
-    ? toolResults
-    : toolResults
-    ? [toolResults]
-    : [];
 
   console.log(
     "🔧 toolResults type:",
     typeof toolResults,
     "length:",
-    resultsArray.length
+    toolResults.length
   );
 
-  for (const result of resultsArray) {
+  for (const result of toolResults) {
     try {
       switch (result.toolName) {
         case "listAvailableProjects":
@@ -320,7 +354,8 @@ function extractDataFromToolResults(toolResults: any[] | any | undefined): any {
         case "searchProjectsByLocation":
           // Extract project data if available
           if (result.result && typeof result.result === "object") {
-            data.projects.push(...(result.result.projects || []));
+            const resultObj = result.result as { projects?: unknown[] };
+            data.projects.push(...(resultObj.projects || []));
           }
           break;
 
@@ -335,7 +370,10 @@ function extractDataFromToolResults(toolResults: any[] | any | undefined): any {
         case "deleteExistingProject":
           data.operations.push({
             operation: result.toolName,
-            success: !result.result?.includes("❌"),
+            success:
+              typeof result.result === "string"
+                ? !result.result.includes("❌")
+                : true,
             details: result.result,
           });
           break;
@@ -417,6 +455,7 @@ function generateSuggestions(intent: string): string[] {
  * LEARNING: Validate project permissions
  * Ensure users can only access projects they're authorized to see
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function validateProjectAccess(
   _projectId: string,
   _userId: string,
@@ -436,10 +475,23 @@ export async function validateProjectAccess(
  * LEARNING: Helper for project data formatting
  * Consistent formatting across different operations
  */
-export function formatProjectForDisplay(project: any): string {
-  return `🏗️ **${project.name}**
-📍 ${project.address}${project.suburb ? `, ${project.suburb}` : ""}
+export function formatProjectForDisplay(project: {
+  name?: string;
+  address?: string;
+  suburb?: string;
+  status?: string;
+  progress?: number;
+  created_at?: string;
+}): string {
+  return `🏗️ **${project.name || "Untitled Project"}**
+📍 ${project.address || "No address"}${
+    project.suburb ? `, ${project.suburb}` : ""
+  }
 📊 Status: ${project.status || "Unknown"}
 📈 Progress: ${project.progress || 0}%
-📅 Created: ${new Date(project.created_at).toLocaleDateString()}`;
+📅 Created: ${
+    project.created_at
+      ? new Date(project.created_at).toLocaleDateString()
+      : "Unknown"
+  }`;
 }
