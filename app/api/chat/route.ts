@@ -1,172 +1,220 @@
-import { openai } from "@ai-sdk/openai";
+// ============================================================================
+// BLOKAR AI CHAT API - THIN ORCHESTRATION LAYER
+// ============================================================================
+// This file serves as the entry point for all chat requests.
+// It's been refactored to use Claude Anthropic and hand off processing to the Master Agent.
+//
+// LEARNING NOTES:
+// - This route is now a "thin orchestration layer" - minimal logic
+// - All intelligence and tool orchestration moved to Master Agent
+// - Uses Claude Sonnet 4 instead of OpenAI GPT-4
+// - Proper error handling and logging throughout
+// - maxSteps enables complex multi-step agent workflows
+// ============================================================================
+
+import { anthropic } from "@ai-sdk/anthropic";
 import { streamText } from "ai";
-import { z } from "zod";
 import { createClient } from "@/utils/supabase/server";
-import type { Project } from "@/services/supabase";
+import { masterAgentHandler } from "./agents/master-agent";
+import type { MasterAgentConfig } from "./types/agents";
+
+// ============================================================================
+// CONFIGURATION
+// ============================================================================
 
 export const maxDuration = 30;
 
+/**
+ * LEARNING: Master Agent configuration
+ * These settings control how the Master Agent operates
+ */
+const MASTER_AGENT_CONFIG: MasterAgentConfig = {
+  confidenceThreshold: 0.7, // Route directly if intent confidence > 70%
+  maxRetries: 2, // Retry failed operations up to 2 times
+  enableLogging: true, // Log all agent interactions for debugging
+  fallbackToGeneral: true, // Handle unknown intents gracefully
+};
+
+// ============================================================================
+// CHAT API ENDPOINT
+// ============================================================================
+
+/**
+ * LEARNING: Main chat endpoint
+ * This endpoint now focuses solely on:
+ * 1. Request validation and authentication
+ * 2. Extracting user message from conversation
+ * 3. Handing off to Master Agent
+ * 4. Streaming the response back to client
+ */
 export async function POST(req: Request) {
+  const startTime = Date.now();
+
   try {
+    // Step 1: Parse and validate the request
     const { messages } = await req.json();
+
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+      console.error("❌ Invalid request: No messages provided");
+      return new Response("Bad Request: Messages required", { status: 400 });
+    }
+
+    // Step 2: Initialize Supabase client for authentication context
     const supabase = await createClient();
 
+    // Get user context (optional - for future permission checking)
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    console.log(
+      `🎯 Processing chat request${user ? ` for user ${user.id}` : ""}`
+    );
+
+    // Step 3: Extract the latest user message
+    const latestMessage = messages[messages.length - 1];
+    if (!latestMessage || latestMessage.role !== "user") {
+      console.error("❌ Invalid request: Last message must be from user");
+      return new Response("Bad Request: Invalid message format", {
+        status: 400,
+      });
+    }
+
+    const userMessage = latestMessage.content;
+    const conversationHistory = messages.slice(0, -1); // All messages except the latest
+
+    console.log(`💬 User message: "${userMessage}"`);
+    console.log(
+      `📝 Conversation history: ${conversationHistory.length} messages`
+    );
+
+    // Step 4: Hand off to Master Agent for processing
+    console.log("🎯 Handing off to Master Agent...");
+
+    const agentResponse = await masterAgentHandler(
+      userMessage,
+      conversationHistory,
+      MASTER_AGENT_CONFIG
+    );
+
+    // Step 5: Stream the response using Claude
+    console.log("🤖 Generating Claude response...");
+
     const result = streamText({
-      model: openai("gpt-4o"),
-      messages,
-      system: `You are Blokar AI, an intelligent assistant for construction project management. 
-      
-You can help users by showing project cards on their screen. When users ask to see projects, use the available tools to display them dynamically.
+      model: anthropic("claude-3-5-sonnet-20241022"),
+      messages: [
+        {
+          role: "system",
+          content: `You are Blokar AI, an intelligent assistant for construction project management.
 
-Available actions:
-- Show specific project cards by name or ID
-- List all available projects  
-- Clear the display area
+The Master Agent has processed the user's request and provided the following result:
 
-Be conversational and helpful. When showing projects, explain what you're displaying.`,
+${JSON.stringify(agentResponse, null, 2)}
 
-      tools: {
-        // Server-side tool: Get list of available projects
-        listAvailableProjects: {
-          description: "Get a list of all available projects the user can view",
-          parameters: z.object({}),
-          execute: async () => {
-            try {
-              console.log("📋 Fetching all projects...");
+Your task is to present this information to the user in a conversational, helpful manner. 
 
-              const { data: projects, error } = await supabase
-                .from("projects")
-                .select("id, name, description, status, address, suburb, state")
-                .order("created_at", { ascending: false });
+Guidelines:
+- Use the response message as your primary content
+- Include any data or suggestions from the agent response naturally
+- Be conversational and engaging
+- Use appropriate construction/project management terminology
+- If the operation was successful, be positive and helpful
+- If there were errors, be sympathetic and offer alternatives
+- Include relevant emojis for visual organization
 
-              if (error) {
-                console.error("❌ Supabase error:", error);
-                throw new Error(`Database error: ${error.message}`);
-              }
-
-              console.log(`✅ Found ${projects?.length || 0} projects`);
-
-              // Return a string instead of object for React compatibility
-              const projectsList =
-                projects
-                  ?.map(
-                    (p: Project) => `• ${p.name} (${p.status || "No status"})`
-                  )
-                  .join("\n") || "No projects found";
-
-              return `Found ${
-                projects?.length || 0
-              } projects available:\n\n${projectsList}`;
-            } catch (err) {
-              console.error("🚨 Error in listAvailableProjects:", err);
-              const errorMessage =
-                err instanceof Error ? err.message : "Unknown error occurred";
-              return `Failed to fetch projects: ${errorMessage}`;
-            }
-          },
+Remember: You're the user-facing layer that makes the multi-agent system feel like a single, intelligent assistant.`,
         },
-
-        // Server-side tool: Get specific project details
-        getProjectDetails: {
-          description:
-            "Get detailed information about a specific project by ID or name",
-          parameters: z.object({
-            identifier: z
-              .string()
-              .describe("Project ID or project name to search for"),
-          }),
-          execute: async ({ identifier }) => {
-            try {
-              console.log(`🔍 Searching for project: "${identifier}"`);
-
-              // Try to search by ID first (if it's a UUID), then by name
-              let query = supabase.from("projects").select("*");
-
-              // Check if identifier looks like a UUID
-              const isUUID =
-                /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
-                  identifier
-                );
-
-              if (isUUID) {
-                console.log("🆔 Searching by ID");
-                query = query.eq("id", identifier);
-              } else {
-                console.log("🏷️ Searching by name");
-                query = query.ilike("name", `%${identifier}%`);
-              }
-
-              const { data: projects, error } = await query.limit(5);
-
-              if (error) {
-                console.error("❌ Supabase error:", error);
-                throw new Error(`Database error: ${error.message}`);
-              }
-
-              console.log(
-                `✅ Found ${projects?.length || 0} matching projects`
-              );
-
-              if (!projects || projects.length === 0) {
-                return `No projects found matching "${identifier}". Try a different search term or check your spelling.`;
-              }
-
-              const projectsList = projects
-                .map(
-                  (p: Project) =>
-                    `• ${p.name} (ID: ${p.id}, Status: ${
-                      p.status || "Unknown"
-                    }, Address: ${p.address || "Not specified"})`
-                )
-                .join("\n");
-
-              return `Found ${projects.length} matching project${
-                projects.length === 1 ? "" : "s"
-              }:\n\n${projectsList}`;
-            } catch (err) {
-              console.error("🚨 Error in getProjectDetails:", err);
-              const errorMessage =
-                err instanceof Error ? err.message : "Unknown error occurred";
-              return `Failed to search projects: ${errorMessage}`;
-            }
-          },
+        {
+          role: "user",
+          content: userMessage,
         },
-
-        // Client-side tool: Show project card (handled in frontend)
-        showProjectCard: {
-          description: "Display a project card on the user's screen",
-          parameters: z.object({
-            projectId: z.string().describe("The ID of the project to display"),
-          }),
-          // No execute function = client-side tool
-        },
-
-        // Client-side tool: Clear all cards (handled in frontend)
-        clearAllCards: {
-          description: "Clear all cards from the display area",
-          parameters: z.object({}),
-          // No execute function = client-side tool
-        },
-      },
-
-      // Add error handling for the streaming
-      onError: ({ error }) => {
-        console.error("🚨 Streaming error:", error);
-      },
+      ],
+      maxSteps: 1, // Single step for presentation layer
     });
 
+    const processingTime = Date.now() - startTime;
+    console.log(`✅ Chat request completed in ${processingTime}ms`);
+
+    // Step 6: Return the streaming response
     return result.toDataStreamResponse({
-      // Add custom error message handling
       getErrorMessage: (error) => {
         console.error("🚨 Data stream error:", error);
-        if (error instanceof Error) {
-          return `Error: ${error.message}`;
-        }
-        return "An unexpected error occurred. Please try again.";
+
+        // Log the error details for debugging
+        const errorDetails = {
+          message: error instanceof Error ? error.message : "Unknown error",
+          stack: error instanceof Error ? error.stack : undefined,
+          processingTime: Date.now() - startTime,
+          userMessage: userMessage.substring(0, 100) + "...", // First 100 chars
+        };
+
+        console.error("🚨 Error details:", errorDetails);
+
+        return "I apologize, but I encountered an error while processing your request. Please try again or rephrase your question.";
       },
     });
   } catch (error) {
-    console.error("🚨 Chat API error:", error);
-    return new Response("Internal Server Error", { status: 500 });
+    const processingTime = Date.now() - startTime;
+
+    console.error("🚨 Chat API critical error:", {
+      error: error instanceof Error ? error.message : "Unknown error",
+      stack: error instanceof Error ? error.stack : undefined,
+      processingTime,
+    });
+
+    // Return a user-friendly error response
+    return new Response(
+      JSON.stringify({
+        error: "Internal server error",
+        message:
+          "I'm experiencing technical difficulties. Please try again in a moment.",
+        timestamp: new Date().toISOString(),
+      }),
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
+}
+
+// ============================================================================
+// HEALTH CHECK ENDPOINT (Optional)
+// ============================================================================
+
+/**
+ * LEARNING: Health check for monitoring
+ * Useful for verifying the API is working without processing a full chat request
+ */
+export async function GET() {
+  try {
+    const supabase = await createClient();
+
+    // Quick health check - verify database connection
+    const { error } = await supabase.from("projects").select("id").limit(1);
+
+    if (error) {
+      throw new Error(`Database connection failed: ${error.message}`);
+    }
+
+    return Response.json({
+      status: "healthy",
+      message: "Blokar AI Chat API is operational",
+      timestamp: new Date().toISOString(),
+      version: "2.0.0-multi-agent",
+    });
+  } catch (error) {
+    console.error("🚨 Health check failed:", error);
+
+    return Response.json(
+      {
+        status: "unhealthy",
+        message: "Service experiencing issues",
+        error: error instanceof Error ? error.message : "Unknown error",
+        timestamp: new Date().toISOString(),
+      },
+      { status: 503 }
+    );
   }
 }
