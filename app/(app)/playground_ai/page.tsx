@@ -18,9 +18,20 @@ interface VisibleCard {
   timestamp: number;
 }
 
+// ✅ Helper function to extract displayable content from tool results
+function getDisplayableResult(result: any): string {
+  if (typeof result === "string") {
+    return result;
+  }
+  if (result && typeof result === "object") {
+    return result.message || result.text || JSON.stringify(result);
+  }
+  return "Action completed";
+}
+
 export default function PlaygroundAIPage() {
   const [visibleCards, setVisibleCards] = useState<VisibleCard[]>([]);
-  const { projects } = useProjects();
+  const { projects, refetch, updateProject } = useProjects(); // ✅ Get refetch function
 
   const { messages, input, handleInputChange, handleSubmit, isLoading } =
     useChat({
@@ -52,6 +63,33 @@ export default function PlaygroundAIPage() {
           }
 
           return `Project with ID ${projectId} not found`;
+        }
+      },
+      // ✅ Add tool result handler to refresh data after updates
+      onFinish: async (message) => {
+        // Check if any tool calls were project updates/creations/deletions
+        const toolInvocations = message.toolInvocations || [];
+        const hasProjectChanges = toolInvocations.some((tool) =>
+          [
+            "updateExistingProject",
+            "createNewProject",
+            "deleteExistingProject",
+          ].includes(tool.toolName)
+        );
+
+        if (hasProjectChanges) {
+          console.log("🔄 Project changes detected, refreshing data...");
+          await refetch(); // ✅ Refresh projects data
+
+          // ✅ Also refresh visible cards with updated data
+          setVisibleCards((prevCards) =>
+            prevCards.map((card) => {
+              const updatedProject = projects.find(
+                (p) => p.id === card.data.id
+              );
+              return updatedProject ? { ...card, data: updatedProject } : card;
+            })
+          );
         }
       },
     });
@@ -127,7 +165,7 @@ export default function PlaygroundAIPage() {
         </ScrollArea>
       </div>
 
-      {/* AI Chat Area - Right Side */}
+      {/* AI Chat Area - Right Side - UNCHANGED */}
       <div className="w-96 flex flex-col">
         <Card className="h-full flex flex-col">
           <CardHeader className="pb-4">
@@ -180,7 +218,7 @@ export default function PlaygroundAIPage() {
                             🔧 {tool.toolName}
                             {"result" in tool && tool.result && (
                               <div className="mt-1 font-medium">
-                                ✅ {tool.result}
+                                ✅ {getDisplayableResult(tool.result)}
                               </div>
                             )}
                           </div>

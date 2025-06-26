@@ -1,58 +1,117 @@
-// ============================================================================
-// BLOKAR AI CHAT API - THIN ORCHESTRATION LAYER
-// ============================================================================
-// This file serves as the entry point for all chat requests.
-// It's been refactored to use Claude Anthropic and hand off processing to the Master Agent.
-//
-// LEARNING NOTES:
-// - This route is now a "thin orchestration layer" - minimal logic
-// - All intelligence and tool orchestration moved to Master Agent
-// - Uses Claude Sonnet 4 instead of OpenAI GPT-4
-// - Proper error handling and logging throughout
-// - maxSteps enables complex multi-step agent workflows
-// ============================================================================
-
 import { anthropic } from "@ai-sdk/anthropic";
 import { streamText } from "ai";
 import { createClient } from "@/utils/supabase/server";
-import { masterAgentHandler } from "./agents/master-agent";
-import type { MasterAgentConfig } from "./types/agents";
+
+// Import all tools directly - eliminates agent routing overhead
+import { projectTools } from "./tools/projects";
 import {
-  showProjectCard,
   clearAllCards,
   highlightProject,
   refreshProjectList,
+  showProjectCard,
 } from "./tools/system";
 
-// ============================================================================
-// CONFIGURATION
-// ============================================================================
+// ✅ REMOVED: searchProjectsByLocation (was eliminated as redundant)
 
-export const maxDuration = 30;
-
-/**
- * LEARNING: Master Agent configuration
- * These settings control how the Master Agent operates
- */
-const MASTER_AGENT_CONFIG: MasterAgentConfig = {
-  confidenceThreshold: 0.7, // Route directly if intent confidence > 70%
-  maxRetries: 2, // Retry failed operations up to 2 times
-  enableLogging: true, // Log all agent interactions for debugging
-  fallbackToGeneral: true, // Handle unknown intents gracefully
+// Combine all tools into single object for efficient single call
+const allTools = {
+  // Project management tools (CRUD operations)
+  ...projectTools,
+  // UI management tools (display and interaction)
+  clearAllCards,
+  highlightProject,
+  refreshProjectList,
+  showProjectCard,
 };
 
-// ============================================================================
-// CHAT API ENDPOINT
-// ============================================================================
+// Single comprehensive system prompt that replaces Master Agent + Project Agent logic
+const BLOKAR_SYSTEM_PROMPT = `You are Blokar AI, an intelligent assistant for construction project management and AEC (Architecture, Engineering, Construction) workflows.
 
-/**
- * LEARNING: Main chat endpoint
- * This endpoint now focuses solely on:
- * 1. Request validation and authentication
- * 2. Extracting user message from conversation
- * 3. Handing off to Master Agent
- * 4. Streaming the response back to client
- */
+## CORE CAPABILITIES & TOOL ROUTING
+
+You have access to two categories of tools:
+
+### PROJECT MANAGEMENT TOOLS:
+- listAvailableProjects: Get all projects with filtering options
+- getProjectDetails: Search and retrieve detailed project information
+- createNewProject: Create new construction projects
+- updateExistingProject: Modify project details and status
+- deleteExistingProject: Remove projects safely
+- getProjectStatistics: Get project analytics and metrics
+
+### UI MANAGEMENT TOOLS:
+- showProjectCard: Display project details in the interface
+- clearAllCards: Clear the workspace for new content
+- highlightProject: Emphasize specific project information
+- refreshProjectList: Update the project list display
+- searchProjectsByLocation: Find projects by geographic location
+
+## INTELLIGENT ROUTING LOGIC
+
+**For project requests (listing, searching, creation, updates):**
+1. Use appropriate project management tools first
+2. Then use UI tools to display results to the user
+3. Always call showProjectCard when project details are retrieved
+4. Use clearAllCards before showing multiple projects
+
+**For UI requests (show, display, clear, highlight):**
+1. Use UI management tools directly
+2. Provide conversational feedback about what was displayed
+
+**Multi-step workflows:**
+- You can call multiple tools in sequence to complete complex requests
+- Always prioritize user experience by showing relevant information
+- Use clearAllCards strategically to avoid cluttered displays
+
+## AEC INDUSTRY CONTEXT
+
+You understand construction project terminology:
+- Project phases (design, permits, construction, completion)
+- Building types (residential, commercial, mixed-use, infrastructure)
+- Project roles (architect, engineer, contractor, project manager)
+- Construction processes and workflows
+- Building codes and compliance requirements
+
+## RESPONSE GUIDELINES
+
+- Be conversational and professional
+- Use construction industry terminology appropriately
+- Provide clear feedback about what tools were used and why
+- When displaying project information, highlight key details like status, progress, and important dates
+- Always extract and use project IDs when tools return them
+- If multiple projects are found, show them all unless user specifies otherwise
+- For errors, provide helpful suggestions for alternative searches or actions
+
+## WORKFLOW PATTERNS
+
+**Project Search Flow:**
+1. Use getProjectDetails or listAvailableProjects
+2. Call showProjectCard for each relevant project
+3. Provide summary of what was displayed
+
+**Project Creation Flow:**
+1. Use createNewProject with provided details
+2. If successful, call showProjectCard to display the new project
+3. Provide confirmation and next steps
+
+**Workspace Management:**
+- Clear workspace when switching between different project contexts
+- Keep related information visible when it adds value
+- Use highlighting to draw attention to important updates
+
+You are efficient, helpful, and focused on getting construction professionals the information they need quickly and clearly.`;
+
+export const maxDuration = 60; // Allow up to 60 seconds for complex workflows
+
+export async function GET() {
+  return new Response(
+    "Blokar AI Chat API - Optimized Single Call Architecture",
+    {
+      status: 200,
+    }
+  );
+}
+
 export async function POST(req: Request) {
   const startTime = Date.now();
 
@@ -68,137 +127,55 @@ export async function POST(req: Request) {
     // Step 2: Initialize Supabase client for authentication context
     const supabase = await createClient();
 
-    // Get user context (optional - for future permission checking)
+    // Get user context (for future permission checking and tool context)
     const {
       data: { user },
     } = await supabase.auth.getUser();
+
     console.log(
-      `🎯 Processing chat request${user ? ` for user ${user.id}` : ""}`
+      `🎯 Processing optimized chat request${
+        user ? ` for user ${user.id}` : ""
+      }`
     );
 
-    // Step 3: Extract the latest user message
-    const latestMessage = messages[messages.length - 1];
-    if (!latestMessage || latestMessage.role !== "user") {
-      console.error("❌ Invalid request: Last message must be from user");
-      return new Response("Bad Request: Invalid message format", {
-        status: 400,
-      });
-    }
-
-    const userMessage = latestMessage.content;
-    const conversationHistory = messages.slice(0, -1); // All messages except the latest
-
-    console.log(`💬 User message: "${userMessage}"`);
-    console.log(
-      `📝 Conversation history: ${conversationHistory.length} messages`
-    );
-
-    // Step 4: Hand off to Master Agent for processing
-    console.log("🎯 Handing off to Master Agent...");
-
-    const agentResponse = await masterAgentHandler(
-      userMessage,
-      conversationHistory,
-      MASTER_AGENT_CONFIG
-    );
-
-    // Step 5: Stream the response using Claude
-    console.log("🤖 Generating Claude response...");
-
-    // 🔍 DEBUG: Log the exact agent response structure
-    console.log(
-      "🔍 Agent Response Structure for Claude:",
-      JSON.stringify(agentResponse, null, 2)
-    );
+    // Step 3: Single optimized AI call with all tools and intelligent routing
+    console.log("🚀 Starting single streamText call with all tools...");
 
     const result = streamText({
-      model: anthropic("claude-3-5-sonnet-20241022"),
-      tools: {
-        showProjectCard,
-        clearAllCards,
-        highlightProject,
-        refreshProjectList,
+      model: anthropic("claude-sonnet-4-20250514"),
+      system: BLOKAR_SYSTEM_PROMPT,
+      messages,
+      tools: allTools,
+      // maxSteps: 5, // Enable multi-step workflows within single call
+
+      // Optional: Enable tool call streaming for real-time UI updates
+      toolCallStreaming: true,
+
+      // Optional: Add step completion logging for debugging
+      onStepFinish: (step) => {
+        console.log(
+          `✅ Step completed: ${step.toolCalls?.length || 0} tool calls, ${
+            step.text?.length || 0
+          } chars`
+        );
       },
-      messages: [
-        {
-          role: "system",
-          content: `You are Blokar AI, an intelligent assistant for construction project management.
-
-The Master Agent has processed the user's request and provided the following result:
-
-${JSON.stringify(agentResponse, null, 2)}
-
-🔍 CRITICAL PROJECT ID EXTRACTION INSTRUCTIONS:
-
-**IMPORTANT: Project IDs are embedded in the agent response text, NOT in structured data arrays.**
-
-Look in the \`agentResponse.message\` text for lines containing "🆔 Project ID:" followed by a UUID.
-
-Example extraction pattern:
-- Text: "🆔 Project ID: 9bb52a3c-0da8-4cdf-ac18-890d06b65c85"
-- Extract: "9bb52a3c-0da8-4cdf-ac18-890d06b65c85"
-
-WORKFLOW FOR PROJECT DISPLAY:
-
-1. **Search for Project IDs in the message text:**
-   - Look for "🆔 Project ID: " pattern
-   - Extract the UUID that follows
-   - Use this ID for showProjectCard calls
-
-2. **For project listing responses:**
-   - If multiple projects mentioned, call clearAllCards first
-   - Extract all project IDs from the text
-   - Call showProjectCard for each extracted ID
-
-3. **For single project responses:**
-   - Extract the one project ID from the message
-   - Call showProjectCard with that specific projectId
-   - Provide conversational response about what was displayed
-
-4. **If no project IDs found in text:**
-   - Provide helpful response about trying different search terms
-   - Suggest alternative actions
-
-**Current Request Context:** ${userMessage}
-
-Your task is to:
-1. Parse the agent response message for project IDs
-2. Call appropriate UI tools with extracted IDs
-3. Provide a conversational response about what was displayed
-
-Guidelines:
-- Use the response message as your primary content
-- ALWAYS extract and use project IDs when available in the text
-- Include any data or suggestions from the agent response naturally
-- Be conversational and engaging
-- Use appropriate construction/project management terminology
-- If the operation was successful, be positive and helpful
-- Include relevant emojis for visual organization
-
-Remember: You're the user-facing layer that extracts project IDs from text and displays the visual cards.`,
-        },
-        {
-          role: "user",
-          content: userMessage,
-        },
-      ],
-      maxSteps: 3, // Allow for UI tool calls plus response
     });
 
     const processingTime = Date.now() - startTime;
-    console.log(`✅ Chat request completed in ${processingTime}ms`);
+    console.log(
+      `⚡ Single-call architecture completed setup in ${processingTime}ms`
+    );
 
-    // Step 6: Return the streaming response
+    // Step 4: Return the streaming response directly
     return result.toDataStreamResponse({
       getErrorMessage: (error) => {
-        console.error("🚨 Data stream error:", error);
+        console.error("🚨 Single-call stream error:", error);
 
-        // Log the error details for debugging
+        // Log error details for debugging
         const errorDetails = {
           message: error instanceof Error ? error.message : "Unknown error",
           stack: error instanceof Error ? error.stack : undefined,
           processingTime: Date.now() - startTime,
-          userMessage: userMessage.substring(0, 100) + "...", // First 100 chars
         };
 
         console.error("🚨 Error details:", errorDetails);
@@ -229,46 +206,6 @@ Remember: You're the user-facing layer that extracts project IDs from text and d
           "Content-Type": "application/json",
         },
       }
-    );
-  }
-}
-
-// ============================================================================
-// HEALTH CHECK ENDPOINT (Optional)
-// ============================================================================
-
-/**
- * LEARNING: Health check for monitoring
- * Useful for verifying the API is working without processing a full chat request
- */
-export async function GET() {
-  try {
-    const supabase = await createClient();
-
-    // Quick health check - verify database connection
-    const { error } = await supabase.from("projects").select("id").limit(1);
-
-    if (error) {
-      throw new Error(`Database connection failed: ${error.message}`);
-    }
-
-    return Response.json({
-      status: "healthy",
-      message: "Blokar AI Chat API is operational",
-      timestamp: new Date().toISOString(),
-      version: "2.0.0-multi-agent",
-    });
-  } catch (error) {
-    console.error("🚨 Health check failed:", error);
-
-    return Response.json(
-      {
-        status: "unhealthy",
-        message: "Service experiencing issues",
-        error: error instanceof Error ? error.message : "Unknown error",
-        timestamp: new Date().toISOString(),
-      },
-      { status: 503 }
     );
   }
 }
