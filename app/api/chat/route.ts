@@ -17,6 +17,12 @@ import { streamText } from "ai";
 import { createClient } from "@/utils/supabase/server";
 import { masterAgentHandler } from "./agents/master-agent";
 import type { MasterAgentConfig } from "./types/agents";
+import {
+  showProjectCard,
+  clearAllCards,
+  highlightProject,
+  refreshProjectList,
+} from "./tools/system";
 
 // ============================================================================
 // CONFIGURATION
@@ -99,8 +105,20 @@ export async function POST(req: Request) {
     // Step 5: Stream the response using Claude
     console.log("🤖 Generating Claude response...");
 
+    // 🔍 DEBUG: Log the exact agent response structure
+    console.log(
+      "🔍 Agent Response Structure for Claude:",
+      JSON.stringify(agentResponse, null, 2)
+    );
+
     const result = streamText({
       model: anthropic("claude-3-5-sonnet-20241022"),
+      tools: {
+        showProjectCard,
+        clearAllCards,
+        highlightProject,
+        refreshProjectList,
+      },
       messages: [
         {
           role: "system",
@@ -110,25 +128,61 @@ The Master Agent has processed the user's request and provided the following res
 
 ${JSON.stringify(agentResponse, null, 2)}
 
-Your task is to present this information to the user in a conversational, helpful manner. 
+🔍 CRITICAL PROJECT ID EXTRACTION INSTRUCTIONS:
+
+**IMPORTANT: Project IDs are embedded in the agent response text, NOT in structured data arrays.**
+
+Look in the \`agentResponse.message\` text for lines containing "🆔 Project ID:" followed by a UUID.
+
+Example extraction pattern:
+- Text: "🆔 Project ID: 9bb52a3c-0da8-4cdf-ac18-890d06b65c85"
+- Extract: "9bb52a3c-0da8-4cdf-ac18-890d06b65c85"
+
+WORKFLOW FOR PROJECT DISPLAY:
+
+1. **Search for Project IDs in the message text:**
+   - Look for "🆔 Project ID: " pattern
+   - Extract the UUID that follows
+   - Use this ID for showProjectCard calls
+
+2. **For project listing responses:**
+   - If multiple projects mentioned, call clearAllCards first
+   - Extract all project IDs from the text
+   - Call showProjectCard for each extracted ID
+
+3. **For single project responses:**
+   - Extract the one project ID from the message
+   - Call showProjectCard with that specific projectId
+   - Provide conversational response about what was displayed
+
+4. **If no project IDs found in text:**
+   - Provide helpful response about trying different search terms
+   - Suggest alternative actions
+
+**Current Request Context:** ${userMessage}
+
+Your task is to:
+1. Parse the agent response message for project IDs
+2. Call appropriate UI tools with extracted IDs
+3. Provide a conversational response about what was displayed
 
 Guidelines:
 - Use the response message as your primary content
+- ALWAYS extract and use project IDs when available in the text
 - Include any data or suggestions from the agent response naturally
 - Be conversational and engaging
 - Use appropriate construction/project management terminology
 - If the operation was successful, be positive and helpful
-- If there were errors, be sympathetic and offer alternatives
 - Include relevant emojis for visual organization
 
-Remember: You're the user-facing layer that makes the multi-agent system feel like a single, intelligent assistant.`,
+Remember: You're the user-facing layer that extracts project IDs from text and displays the visual cards.`,
         },
         {
           role: "user",
           content: userMessage,
         },
       ],
-      maxSteps: 1, // Single step for presentation layer
+      maxSteps: 3, // Allow for UI tool calls plus response
     });
 
     const processingTime = Date.now() - startTime;

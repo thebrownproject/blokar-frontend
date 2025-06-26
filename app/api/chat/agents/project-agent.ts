@@ -20,14 +20,7 @@ import {
   updateExistingProject,
   deleteExistingProject,
   getProjectStatistics,
-  showProjectCard,
-  clearAllCards,
 } from "../tools/projects";
-import {
-  highlightProject,
-  refreshProjectList,
-  searchProjectsByLocation,
-} from "../tools/system";
 import type { AgentResponse, AgentContext } from "../types/agents";
 
 // ============================================================================
@@ -77,6 +70,24 @@ You are the Project Agent for Blokar AI, specializing in construction project ma
 - clearAllCards: Clear the display area
 - highlightProject: Emphasize specific project
 - refreshProjectList: Update project listings
+
+## CRITICAL UI INTEGRATION RULE:
+
+**ALWAYS call UI tools after successfully finding project data!**
+
+When you successfully find project(s) using database tools:
+1. FIRST: Extract the project data using appropriate database tools
+2. THEN: IMMEDIATELY call showProjectCard for each project found
+3. FINALLY: Provide a conversational response about what was displayed
+
+Example workflow:
+1. User asks: "Show me the Harbor project"
+2. You call: getProjectDetails with "Harbor"
+3. You get: Project data with ID "abc123"
+4. You MUST call: showProjectCard with projectId "abc123"
+5. You respond: "I found the Harbor project and displayed it for you!"
+
+This ensures the user sees both the conversational response AND the visual project card.
 
 ## RESPONSE GUIDELINES:
 
@@ -202,12 +213,32 @@ Please handle this request using the appropriate tools and provide a helpful res
     const allToolResults =
       finalToolResults.length > 0 ? finalToolResults : collectedToolResults;
 
+    // 🔍 DEBUG: Log raw tool results from database
+    console.log(
+      "🔍 Project Agent - Raw tool results from DB:",
+      JSON.stringify(allToolResults, null, 2)
+    );
+
     const processingTime = Date.now() - startTime;
 
-    return {
+    const extractedData = extractDataFromToolResults(allToolResults);
+
+    // 🔧 FIX: Extract project IDs from tool results and append to response message
+    const projectIds = extractProjectIdsFromToolResults(allToolResults);
+    let enhancedMessage =
+      responseText || "I've processed your project request.";
+
+    if (projectIds.length > 0) { Can you go through and read the code first and pick up some areas where you think it is at Tuberbos? Because, yeah, for me, it just seems like it's a little bit extreme for the moment. Like, I understand I've got some learning notes in there, so that takes up a bit. But, yeah, I think I need to refactor this code and make it less sloppy.
+      enhancedMessage += "\n\n📋 **Project Details:**\n";
+      projectIds.forEach((id: string) => {
+        enhancedMessage += `🆔 Project ID: ${id}\n`;
+      });
+    }
+
+    const response = {57y
       success: true,
-      message: responseText || "I've processed your project request.",
-      data: extractDataFromToolResults(allToolResults),
+      message: enhancedMessage,
+      data: extractedData,
       metadata: {
         agent: "project",
         intent: intent.intent,
@@ -217,6 +248,14 @@ Please handle this request using the appropriate tools and provide a helpful res
       },
       suggestions: generateSuggestions(intent.intent),
     };
+
+    // 🔍 DEBUG: Log Project Agent response
+    console.log(
+      "🔍 Project Agent returning:",
+      JSON.stringify(response, null, 2)
+    );
+
+    return response;
   } catch (error) {
     console.error("🚨 Project Agent error:", error);
 
@@ -251,23 +290,14 @@ function getToolsForIntent(intent: string) {
     listAvailableProjects,
     getProjectDetails,
     getProjectStatistics,
-    showProjectCard,
-    clearAllCards,
   };
 
   switch (intent) {
     case "project-listing":
-      return {
-        ...baseTools,
-        searchProjectsByLocation,
-        refreshProjectList,
-      };
+      return baseTools;
 
     case "project-retrieval":
-      return {
-        ...baseTools,
-        highlightProject,
-      };
+      return baseTools;
 
     case "project-creation":
       return {
@@ -289,10 +319,6 @@ function getToolsForIntent(intent: string) {
 
     case "ui-interaction":
       return {
-        showProjectCard,
-        clearAllCards,
-        highlightProject,
-        refreshProjectList,
         listAvailableProjects,
         getProjectDetails,
       };
@@ -348,14 +374,50 @@ function extractDataFromToolResults(
 
   for (const result of toolResults) {
     try {
+      console.log(
+        `🔍 Processing tool result for: ${result.toolName}`,
+        result.result
+      );
+
       switch (result.toolName) {
         case "listAvailableProjects":
         case "getProjectDetails":
         case "searchProjectsByLocation":
-          // Extract project data if available
+          // Extract project data if available - handle multiple data structure patterns
           if (result.result && typeof result.result === "object") {
-            const resultObj = result.result as { projects?: unknown[] };
-            data.projects.push(...(resultObj.projects || []));
+            const resultObj = result.result as any;
+
+            // Pattern 1: { data: [...projects...] } - common from database tools
+            if (resultObj.data && Array.isArray(resultObj.data)) {
+              console.log(
+                `🔍 Found ${resultObj.data.length} projects in result.data`
+              );
+              data.projects.push(...resultObj.data);
+            }
+            // Pattern 2: { projects: [...projects...] }
+            else if (resultObj.projects && Array.isArray(resultObj.projects)) {
+              console.log(
+                `🔍 Found ${resultObj.projects.length} projects in result.projects`
+              );
+              data.projects.push(...resultObj.projects);
+            }
+            // Pattern 3: Direct array [...projects...]
+            else if (Array.isArray(resultObj)) {
+              console.log(
+                `🔍 Found ${resultObj.length} projects in direct array`
+              );
+              data.projects.push(...resultObj);
+            }
+            // Pattern 4: Single project object
+            else if (resultObj.id || resultObj.name) {
+              console.log("🔍 Found single project object");
+              data.projects.push(resultObj);
+            } else {
+              console.log(
+                "🔍 Could not extract projects from result structure:",
+                Object.keys(resultObj)
+              );
+            }
           }
           break;
 
@@ -384,6 +446,39 @@ function extractDataFromToolResults(
   }
 
   return data;
+}
+
+/**
+ * Extract project IDs from tool result text
+ */
+function extractProjectIdsFromToolResults(
+  toolResults: Array<{
+    toolCallId: string;
+    toolName: string;
+    args: unknown;
+    result: unknown;
+  }>
+): string[] {
+  const projectIds: string[] = [];
+
+  for (const result of toolResults) {
+    if (typeof result.result === "string") {
+      // Look for pattern: 🆔 Project ID: {UUID}
+      const projectIdMatches = result.result.match(
+        /🆔 Project ID: ([a-f0-9-]+)/g
+      );
+      if (projectIdMatches) {
+        projectIdMatches.forEach((match) => {
+          const id = match.replace("🆔 Project ID: ", "");
+          if (id && !projectIds.includes(id)) {
+            projectIds.push(id);
+          }
+        });
+      }
+    }
+  }
+
+  return projectIds;
 }
 
 /**

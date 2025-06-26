@@ -1,0 +1,1382 @@
+
+> blokar-frontend@0.1.0 dev
+> next dev --turbopack
+
+   ▲ Next.js 15.3.3 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.1.100:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Compiled middleware in 178ms
+ ✓ Ready in 1113ms
+ ○ Compiling /playground_ai ...
+ ✓ Compiled /playground_ai in 2.5s
+WARNING: Panel defaultSize prop recommended to avoid layout shift after server rendering
+ GET /playground_ai 200 in 2860ms
+ ✓ Compiled /favicon.ico in 323ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 572ms
+WARNING: Panel defaultSize prop recommended to avoid layout shift after server rendering
+ GET /playground_ai 200 in 145ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 252ms
+ ○ Compiling /api/chat ...
+ ✓ Compiled /api/chat in 668ms
+🎯 Processing chat request for user 44477617-b5e9-4cf5-8612-b2e1461a8301
+💬 User message: "Can you show me the card for commercial fitout project?"
+📝 Conversation history: 0 messages
+🎯 Handing off to Master Agent...
+🎯 Master Agent processing message: Can you show me the card for commercial fitout project?
+🎯 Classifying intent for message: "Can you show me the card for commercial fitout project?"
+✅ Intent classified as: project-retrieval (confidence: 0.9)
+🤔 Reasoning: The user is specifically requesting to see details about a single project (the "commercial fitout project"). They used the phrase "show me the card" which indicates they want to retrieve information about a specific project rather than listing multiple projects. The use of "the" before "commercial fitout project" suggests they're referring to a specific project they're aware of.
+📝 Extracted entities: { projectName: 'commercial fitout project' }
+🎯 Intent classified as: project-retrieval (confidence: 0.9)
+🎯 Routing to Project Agent
+🏗️ Project Agent processing: project-retrieval
+🔍 Executing getProjectDetails tool for: "commercial fitout"
+🔍 Searching for projects with identifier: "commercial fitout"
+🏷️ Searching by project name
+✅ Found 0 matching projects
+🔍 Project Agent - Raw tool results from DB: [
+  {
+    "type": "tool-result",
+    "toolCallId": "toolu_01Fwo8KJZLH5QMDWaQVswMK2",
+    "toolName": "getProjectDetails",
+    "args": {
+      "identifier": "commercial fitout",
+      "limit": 10,
+      "offset": 0,
+      "includeRelated": false
+    },
+    "result": "❌ No projects found matching \"commercial fitout\". Please check the spelling or try a different search term."
+  }
+]
+🔧 toolResults type: object length: 1
+🔍 Processing tool result for: getProjectDetails ❌ No projects found matching "commercial fitout". Please check the spelling or try a different search term.
+🔍 Project Agent returning: {
+  "success": true,
+  "message": "I'll help you find and display the commercial fitout project using the getProjectDetails function, which allows us to search for projects by name.I apologize, but I wasn't able to find an exact match for \"commercial fitout\" in the project database. This could be because:\n1. The project might be named differently\n2. There might be a spelling variation\n3. It might be part of a longer project name\n\nWould you like to:\n1. Try searching with a different name or keyword?\n2. See a list of all available projects to find the one you're looking for?\n3. Provide more details about the project to help narrow down the search?\n\nPlease let me know how you'd like to proceed, and I'll be happy to help you find the right project.",
+  "data": {
+    "projects": [],
+    "statistics": null,
+    "operations": []
+  },
+  "metadata": {
+    "agent": "project",
+    "intent": "project-retrieval",
+    "confidence": 0.9,
+    "processingTime": 5700,
+    "toolsUsed": [
+      "getProjectDetails"
+    ]
+  },
+  "suggestions": [
+    "Update project status or details",
+    "View related tasks or documents",
+    "Check project progress",
+    "See similar projects"
+  ]
+}
+✅ Master Agent completed in 9407ms
+🤖 Generating Claude response...
+🔍 Agent Response Structure for Claude: {
+  "success": true,
+  "message": "I'll help you find and display the commercial fitout project using the getProjectDetails function, which allows us to search for projects by name.I apologize, but I wasn't able to find an exact match for \"commercial fitout\" in the project database. This could be because:\n1. The project might be named differently\n2. There might be a spelling variation\n3. It might be part of a longer project name\n\nWould you like to:\n1. Try searching with a different name or keyword?\n2. See a list of all available projects to find the one you're looking for?\n3. Provide more details about the project to help narrow down the search?\n\nPlease let me know how you'd like to proceed, and I'll be happy to help you find the right project.",
+  "data": {
+    "projects": [],
+    "statistics": null,
+    "operations": []
+  },
+  "metadata": {
+    "agent": "project",
+    "intent": "project-retrieval",
+    "confidence": 0.9,
+    "processingTime": 5700,
+    "toolsUsed": [
+      "getProjectDetails"
+    ],
+    "masterAgent": {
+      "intent": "project-retrieval",
+      "confidence": 0.9,
+      "processingTime": 9407,
+      "routing": {
+        "agent": "project",
+        "reason": "Project-related intent requires Project Agent expertise"
+      }
+    }
+  },
+  "suggestions": [
+    "Update project status or details",
+    "View related tasks or documents",
+    "Check project progress",
+    "See similar projects"
+  ]
+}
+✅ Chat request completed in 9556ms
+ POST /api/chat 200 in 14489ms
+🎯 Processing chat request for user 44477617-b5e9-4cf5-8612-b2e1461a8301
+💬 User message: "Show me the Commercial Office Fitout project"
+📝 Conversation history: 2 messages
+🎯 Handing off to Master Agent...
+🎯 Master Agent processing message: Show me the Commercial Office Fitout project
+🎯 Classifying intent for message: "Show me the Commercial Office Fitout project"
+✅ Intent classified as: project-retrieval (confidence: 0.95)
+🤔 Reasoning: The user is clearly requesting to view a specific project by its name ("Commercial Office Fitout"). The phrase "Show me" combined with a specific project name is a clear indicator of project-retrieval intent rather than project-listing (which would be for multiple projects). The request is direct and unambiguous.
+📝 Extracted entities: { projectName: 'Commercial Office Fitout' }
+🎯 Intent classified as: project-retrieval (confidence: 0.95)
+🎯 Routing to Project Agent
+🏗️ Project Agent processing: project-retrieval
+🔍 Executing getProjectDetails tool for: "Commercial Office Fitout"
+🔍 Searching for projects with identifier: "Commercial Office Fitout"
+🏷️ Searching by project name
+✅ Found 1 matching projects
+🔍 Project Agent - Raw tool results from DB: [
+  {
+    "type": "tool-result",
+    "toolCallId": "toolu_01Cq1p1DXJYzyXUBc6xvRwLk",
+    "toolName": "getProjectDetails",
+    "args": {
+      "identifier": "Commercial Office Fitout",
+      "limit": 10,
+      "offset": 0,
+      "includeRelated": false
+    },
+    "result": "Found 1 matching project:\n\n🏗️ **Commercial Office Fitout - Level 8, Tower Building**\n📍 Address: Level 8, 100 George Street, Sydney, NSW 2000\n📊 Status: da_approved\n📈 Progress: 65%\n🏢 Type: commercial\n📅 Created: 6/10/2025\n🏗️ Scale: medium\n🏢 Building Class: 5\n🆔 Project ID: 9bb52a3c-0da8-4cdf-ac18-890d06b65c85"
+  }
+]
+🔧 toolResults type: object length: 1
+🔍 Processing tool result for: getProjectDetails Found 1 matching project:
+
+🏗️ **Commercial Office Fitout - Level 8, Tower Building**
+📍 Address: Level 8, 100 George Street, Sydney, NSW 2000
+📊 Status: da_approved
+📈 Progress: 65%
+🏢 Type: commercial
+📅 Created: 6/10/2025
+🏗️ Scale: medium
+🏢 Building Class: 5
+🆔 Project ID: 9bb52a3c-0da8-4cdf-ac18-890d06b65c85
+🔍 Project Agent returning: {
+  "success": true,
+  "message": "I'll help you find and display the Commercial Office Fitout project.I've found the Commercial Office Fitout project and here are the key details:\n- Located on Level 8 of the Tower Building at 100 George Street, Sydney\n- Currently at 65% completion\n- Status is DA Approved\n- It's a medium-scale commercial project\n- Building Class: 5\n\nThe project card has been displayed for you. Is there any specific aspect of this fitout project you'd like to know more about? I can help you with:\n- More detailed project information\n- Related tasks and contacts\n- Current progress milestones\n- Project timeline updates\n\nJust let me know what additional information would be helpful!",
+  "data": {
+    "projects": [],
+    "statistics": null,
+    "operations": []
+  },
+  "metadata": {
+    "agent": "project",
+    "intent": "project-retrieval",
+    "confidence": 0.95,
+    "processingTime": 5980,
+    "toolsUsed": [
+      "getProjectDetails"
+    ]
+  },
+  "suggestions": [
+    "Update project status or details",
+    "View related tasks or documents",
+    "Check project progress",
+    "See similar projects"
+  ]
+}
+✅ Master Agent completed in 9179ms
+🤖 Generating Claude response...
+🔍 Agent Response Structure for Claude: {
+  "success": true,
+  "message": "I'll help you find and display the Commercial Office Fitout project.I've found the Commercial Office Fitout project and here are the key details:\n- Located on Level 8 of the Tower Building at 100 George Street, Sydney\n- Currently at 65% completion\n- Status is DA Approved\n- It's a medium-scale commercial project\n- Building Class: 5\n\nThe project card has been displayed for you. Is there any specific aspect of this fitout project you'd like to know more about? I can help you with:\n- More detailed project information\n- Related tasks and contacts\n- Current progress milestones\n- Project timeline updates\n\nJust let me know what additional information would be helpful!",
+  "data": {
+    "projects": [],
+    "statistics": null,
+    "operations": []
+  },
+  "metadata": {
+    "agent": "project",
+    "intent": "project-retrieval",
+    "confidence": 0.95,
+    "processingTime": 5980,
+    "toolsUsed": [
+      "getProjectDetails"
+    ],
+    "masterAgent": {
+      "intent": "project-retrieval",
+      "confidence": 0.95,
+      "processingTime": 9179,
+      "routing": {
+        "agent": "project",
+        "reason": "Project-related intent requires Project Agent expertise"
+      }
+    }
+  },
+  "suggestions": [
+    "Update project status or details",
+    "View related tasks or documents",
+    "Check project progress",
+    "See similar projects"
+  ]
+}
+✅ Chat request completed in 9352ms
+ POST /api/chat 200 in 15994ms
+🎯 Processing chat request for user 44477617-b5e9-4cf5-8612-b2e1461a8301
+💬 User message: "Show me the Commercial Office Fitout project"
+📝 Conversation history: 4 messages
+🎯 Handing off to Master Agent...
+🎯 Master Agent processing message: Show me the Commercial Office Fitout project
+🎯 Classifying intent for message: "Show me the Commercial Office Fitout project"
+✅ Intent classified as: project-retrieval (confidence: 0.95)
+🤔 Reasoning: The user is clearly requesting to view a specific project by its name ("Commercial Office Fitout"). This is a direct request to retrieve and display details about a single, named project, which perfectly matches the project-retrieval intent category. The request is unambiguous and includes a specific project name.
+📝 Extracted entities: { projectName: 'Commercial Office Fitout' }
+🎯 Intent classified as: project-retrieval (confidence: 0.95)
+🎯 Routing to Project Agent
+🏗️ Project Agent processing: project-retrieval
+🔍 Executing getProjectDetails tool for: "Commercial Office Fitout"
+🔍 Searching for projects with identifier: "Commercial Office Fitout"
+🏷️ Searching by project name
+✅ Found 1 matching projects
+🔍 Project Agent - Raw tool results from DB: [
+  {
+    "type": "tool-result",
+    "toolCallId": "toolu_01CptSkokFPpgbxLFXb6ESWC",
+    "toolName": "getProjectDetails",
+    "args": {
+      "identifier": "Commercial Office Fitout",
+      "limit": 10,
+      "offset": 0,
+      "includeRelated": false
+    },
+    "result": "Found 1 matching project:\n\n🏗️ **Commercial Office Fitout - Level 8, Tower Building**\n📍 Address: Level 8, 100 George Street, Sydney, NSW 2000\n📊 Status: da_approved\n📈 Progress: 65%\n🏢 Type: commercial\n📅 Created: 6/10/2025\n🏗️ Scale: medium\n🏢 Building Class: 5\n🆔 Project ID: 9bb52a3c-0da8-4cdf-ac18-890d06b65c85"
+  }
+]
+🔧 toolResults type: object length: 1
+🔍 Processing tool result for: getProjectDetails Found 1 matching project:
+
+🏗️ **Commercial Office Fitout - Level 8, Tower Building**
+📍 Address: Level 8, 100 George Street, Sydney, NSW 2000
+📊 Status: da_approved
+📈 Progress: 65%
+🏢 Type: commercial
+📅 Created: 6/10/2025
+🏗️ Scale: medium
+🏢 Building Class: 5
+🆔 Project ID: 9bb52a3c-0da8-4cdf-ac18-890d06b65c85
+🔍 Project Agent returning: {
+  "success": true,
+  "message": "I'll help you find the Commercial Office Fitout project using the getProjectDetails function.I've found the Commercial Office Fitout project and will now display its card for you:\n\n📋 **Project Details:**\n🆔 Project ID: 9bb52a3c-0da8-4cdf-ac18-890d06b65c85\n",
+  "data": {
+    "projects": [],
+    "statistics": null,
+    "operations": []
+  },
+  "metadata": {
+    "agent": "project",
+    "intent": "project-retrieval",
+    "confidence": 0.95,
+    "processingTime": 5637,
+    "toolsUsed": [
+      "getProjectDetails"
+    ]
+  },
+  "suggestions": [
+    "Update project status or details",
+    "View related tasks or documents",
+    "Check project progress",
+    "See similar projects"
+  ]
+}
+✅ Master Agent completed in 9106ms
+🤖 Generating Claude response...
+🔍 Agent Response Structure for Claude: {
+  "success": true,
+  "message": "I'll help you find the Commercial Office Fitout project using the getProjectDetails function.I've found the Commercial Office Fitout project and will now display its card for you:\n\n📋 **Project Details:**\n🆔 Project ID: 9bb52a3c-0da8-4cdf-ac18-890d06b65c85\n",
+  "data": {
+    "projects": [],
+    "statistics": null,
+    "operations": []
+  },
+  "metadata": {
+    "agent": "project",
+    "intent": "project-retrieval",
+    "confidence": 0.95,
+    "processingTime": 5637,
+    "toolsUsed": [
+      "getProjectDetails"
+    ],
+    "masterAgent": {
+      "intent": "project-retrieval",
+      "confidence": 0.95,
+      "processingTime": 9106,
+      "routing": {
+        "agent": "project",
+        "reason": "Project-related intent requires Project Agent expertise"
+      }
+    }
+  },
+  "suggestions": [
+    "Update project status or details",
+    "View related tasks or documents",
+    "Check project progress",
+    "See similar projects"
+  ]
+}
+✅ Chat request completed in 9179ms
+ POST /api/chat 200 in 11981ms
+🎯 Processing chat request for user 44477617-b5e9-4cf5-8612-b2e1461a8301
+❌ Invalid request: Last message must be from user
+ POST /api/chat 400 in 82ms
+🎯 Processing chat request for user 44477617-b5e9-4cf5-8612-b2e1461a8301
+💬 User message: "Show me all my projects"
+📝 Conversation history: 6 messages
+🎯 Handing off to Master Agent...
+🎯 Master Agent processing message: Show me all my projects
+🎯 Classifying intent for message: "Show me all my projects"
+✅ Intent classified as: project-listing (confidence: 0.95)
+🤔 Reasoning: The user's request "Show me all my projects" is a clear and unambiguous request to view multiple projects. The phrase "all my projects" directly maps to the project-listing intent as it seeks to display a collection of projects rather than details of a specific project. The use of "all" indicates they want to see their complete project portfolio without any specific filters.
+📝 Extracted entities: { quantity: 'all' }
+🎯 Intent classified as: project-listing (confidence: 0.95)
+🎯 Routing to Project Agent
+🏗️ Project Agent processing: project-listing
+📋 Executing listAvailableProjects tool...
+📋 Fetching projects with options: { limit: 20, offset: 0, status: undefined, organizationId: undefined }
+✅ Successfully fetched 14 projects
+📊 Executing getProjectStatistics tool...
+🔍 Project Agent - Raw tool results from DB: [
+  {
+    "type": "tool-result",
+    "toolCallId": "toolu_016Uj6g6j17ufyJCEjVEbriD",
+    "toolName": "listAvailableProjects",
+    "args": {
+      "limit": 20,
+      "offset": 0
+    },
+    "result": "Found 14 projects:\n\n• Aged Care Facility Extension (da_preparation) - 234 Pacific Highwayyy [30% complete]\n• Commercial Office Fitout - Level 8, Tower Building (da_approved) - Level 8, 100 George Street [65% complete]\n• Priority 5 API Test Project (concept) - 123 Collins Street [0% complete]\n• Priority 5 API Test Project (concept) - 123 Collins Street [0% complete]\n• Test Project for API Validation (concept) - 123 Construction Street, Sydney NSW 2000 [0% complete]\n• Test Project for API Validation (concept) - 123 Construction Street, Sydney NSW 2000 [0% complete]\n• Apartment Complex - Melbourne (concept) - 789 Collins Street, Melbourne VIC 3000 [0% complete]\n• Manufacturing Facility - Parramatta (concept) - 567 Church Street [0% complete]\n• Detached House (concept) - 45 Campbell Parade [0% complete]\n• Sydney CBD Office Development (concept) - 123 George Street, Sydney NSW 2000 [0% complete]\n• Apartment Complex - Melbourne (concept) - 789 Collins Street, Melbourne VIC 3000 [0% complete]\n• Manufacturing Facility (concept) - 567 Church Street, Parramatta NSW 2150 [0% complete]\n• Detached House - Bondi Beach (concept) - 45 Campbell Parade, Bondi Beach NSW 2026 [0% complete]\n• Sydney CBD Office Development (concept) - 123 George Street, Sydney NSW 2000 [0% complete]"
+  },
+  {
+    "type": "tool-result",
+    "toolCallId": "toolu_01U56tWdRzah7EfawXNfLqcT",
+    "toolName": "getProjectStatistics",
+    "args": {},
+    "result": "📊 Project Statistics:\n        \nTotal Projects: 14\nAverage Progress: 6.79%\n\nStatus Breakdown:\n  - concept: 12\n  - da_preparation: 1\n  - da_approved: 1"
+  }
+]
+🔧 toolResults type: object length: 2
+🔍 Processing tool result for: listAvailableProjects Found 14 projects:
+
+• Aged Care Facility Extension (da_preparation) - 234 Pacific Highwayyy [30% complete]
+• Commercial Office Fitout - Level 8, Tower Building (da_approved) - Level 8, 100 George Street [65% complete]
+• Priority 5 API Test Project (concept) - 123 Collins Street [0% complete]
+• Priority 5 API Test Project (concept) - 123 Collins Street [0% complete]
+• Test Project for API Validation (concept) - 123 Construction Street, Sydney NSW 2000 [0% complete]
+• Test Project for API Validation (concept) - 123 Construction Street, Sydney NSW 2000 [0% complete]
+• Apartment Complex - Melbourne (concept) - 789 Collins Street, Melbourne VIC 3000 [0% complete]
+• Manufacturing Facility - Parramatta (concept) - 567 Church Street [0% complete]
+• Detached House (concept) - 45 Campbell Parade [0% complete]
+• Sydney CBD Office Development (concept) - 123 George Street, Sydney NSW 2000 [0% complete]
+• Apartment Complex - Melbourne (concept) - 789 Collins Street, Melbourne VIC 3000 [0% complete]
+• Manufacturing Facility (concept) - 567 Church Street, Parramatta NSW 2150 [0% complete]
+• Detached House - Bondi Beach (concept) - 45 Campbell Parade, Bondi Beach NSW 2026 [0% complete]
+• Sydney CBD Office Development (concept) - 123 George Street, Sydney NSW 2000 [0% complete]
+🔍 Processing tool result for: getProjectStatistics 📊 Project Statistics:
+        
+Total Projects: 14
+Average Progress: 6.79%
+
+Status Breakdown:
+  - concept: 12
+  - da_preparation: 1
+  - da_approved: 1
+🔍 Project Agent returning: {
+  "success": true,
+  "message": "I'll help you view all your available projects. Let me fetch that information for you.I've retrieved all your available projects. Here's a summary of what I found:\n\nActive Projects:\n1. 🏥 Aged Care Facility Extension\n   - Status: DA Preparation\n   - Location: 234 Pacific Highway\n   - Progress: 30%\n\n2. 🏢 Commercial Office Fitout\n   - Status: DA Approved\n   - Location: Level 8, 100 George Street\n   - Progress: 65%\n\n3. Several projects in concept phase including:\n   - 🏗️ Apartment Complex (Melbourne)\n   - 🏭 Manufacturing Facility (Parramatta)\n   - 🏠 Detached House\n   - 🏢 Sydney CBD Office Development\n\nKey Statistics:\n- Total Projects: 14\n- Most Advanced Project: Commercial Office Fitout (65% complete)\n- Multiple Projects in Concept Phase\n\nLet me get you some additional statistical information about these projects:Based on the statistics:\n- Most projects (12) are in the concept phase\n- 1 project is in DA preparation\n- 1 project has DA approval\n- The average progress across all projects is 6.79%\n\nWould you like to see more detailed information about any specific project? I can help you dive deeper into any of these projects by providing more detailed information about their status, timeline, and specifications.",
+  "data": {
+    "projects": [],
+    "statistics": null,
+    "operations": []
+  },
+  "metadata": {
+    "agent": "project",
+    "intent": "project-listing",
+    "confidence": 0.95,
+    "processingTime": 9983,
+    "toolsUsed": [
+      "listAvailableProjects",
+      "getProjectStatistics"
+    ]
+  },
+  "suggestions": [
+    "View details of a specific project",
+    "Create a new project",
+    "Filter projects by status or location",
+    "Get project statistics"
+  ]
+}
+✅ Master Agent completed in 14017ms
+🤖 Generating Claude response...
+🔍 Agent Response Structure for Claude: {
+  "success": true,
+  "message": "I'll help you view all your available projects. Let me fetch that information for you.I've retrieved all your available projects. Here's a summary of what I found:\n\nActive Projects:\n1. 🏥 Aged Care Facility Extension\n   - Status: DA Preparation\n   - Location: 234 Pacific Highway\n   - Progress: 30%\n\n2. 🏢 Commercial Office Fitout\n   - Status: DA Approved\n   - Location: Level 8, 100 George Street\n   - Progress: 65%\n\n3. Several projects in concept phase including:\n   - 🏗️ Apartment Complex (Melbourne)\n   - 🏭 Manufacturing Facility (Parramatta)\n   - 🏠 Detached House\n   - 🏢 Sydney CBD Office Development\n\nKey Statistics:\n- Total Projects: 14\n- Most Advanced Project: Commercial Office Fitout (65% complete)\n- Multiple Projects in Concept Phase\n\nLet me get you some additional statistical information about these projects:Based on the statistics:\n- Most projects (12) are in the concept phase\n- 1 project is in DA preparation\n- 1 project has DA approval\n- The average progress across all projects is 6.79%\n\nWould you like to see more detailed information about any specific project? I can help you dive deeper into any of these projects by providing more detailed information about their status, timeline, and specifications.",
+  "data": {
+    "projects": [],
+    "statistics": null,
+    "operations": []
+  },
+  "metadata": {
+    "agent": "project",
+    "intent": "project-listing",
+    "confidence": 0.95,
+    "processingTime": 9983,
+    "toolsUsed": [
+      "listAvailableProjects",
+      "getProjectStatistics"
+    ],
+    "masterAgent": {
+      "intent": "project-listing",
+      "confidence": 0.95,
+      "processingTime": 14017,
+      "routing": {
+        "agent": "project",
+        "reason": "Project-related intent requires Project Agent expertise"
+      }
+    }
+  },
+  "suggestions": [
+    "View details of a specific project",
+    "Create a new project",
+    "Filter projects by status or location",
+    "Get project statistics"
+  ]
+}
+✅ Chat request completed in 14065ms
+ POST /api/chat 200 in 17123ms
+ ○ Compiling /projects/[projectId] ...
+ ✓ Compiled /projects/[projectId] in 1156ms
+ GET /projects/2e003c68-cadf-4f8e-ad77-ee9fad75f10d 200 in 1617ms
+ GET /projects/2e003c68-cadf-4f8e-ad77-ee9fad75f10d 200 in 43ms
+ ○ Compiling / ...
+ ✓ Compiled / in 646ms
+ ⨯ [Error: The default export is not a React Component in "/page"] {
+  page: '/'
+}
+ GET / 500 in 914ms
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 852ms
+🎯 Processing chat request for user 44477617-b5e9-4cf5-8612-b2e1461a8301
+💬 User message: "Show me the detached house project info?"
+📝 Conversation history: 0 messages
+🎯 Handing off to Master Agent...
+🎯 Master Agent processing message: Show me the detached house project info?
+🎯 Classifying intent for message: "Show me the detached house project info?"
+✅ Intent classified as: project-retrieval (confidence: 0.9)
+🤔 Reasoning: The user is specifically requesting information about a single project (the "detached house project"). The phrase "show me" combined with "project info" clearly indicates they want to retrieve and view details about this specific project rather than listing multiple projects or performing other actions.
+📝 Extracted entities: { projectName: 'detached house' }
+🎯 Intent classified as: project-retrieval (confidence: 0.9)
+🎯 Routing to Project Agent
+🏗️ Project Agent processing: project-retrieval
+🔍 Executing getProjectDetails tool for: "detached house"
+🔍 Searching for projects with identifier: "detached house"
+🏷️ Searching by project name
+✅ Found 2 matching projects
+🔍 Project Agent - Raw tool results from DB: [
+  {
+    "type": "tool-result",
+    "toolCallId": "toolu_016qRaGMuhKXmq3h8LLp3qyj",
+    "toolName": "getProjectDetails",
+    "args": {
+      "identifier": "detached house",
+      "limit": 10,
+      "offset": 0,
+      "includeRelated": false
+    },
+    "result": "Found 2 matching projects:\n\n🏗️ **Detached House - Bondi Beach**\n📍 Address: 45 Campbell Parade, Bondi Beach NSW 2026, Bondi Beach, NSW 2026\n📊 Status: concept\n📈 Progress: 0%\n🏢 Type: residential\n📅 Created: 6/8/2025\n🏗️ Scale: medium\n🏢 Building Class: 1a\n🆔 Project ID: ddcb5966-d16c-4d03-a6bd-97e1292fbe11\n\n──────────────────────────────────────────────────\n\n🏗️ **Detached House**\n📍 Address: 45 Campbell Parade, Bondi Beach, NSW 2026\n📊 Status: concept\n📈 Progress: 0%\n🏢 Type: residential\n📅 Created: 6/8/2025\n🏗️ Scale: medium\n🏢 Building Class: 1a\n🆔 Project ID: ec358fd4-56b6-48d9-9c90-8282cf188ee5"
+  }
+]
+🔧 toolResults type: object length: 1
+🔍 Processing tool result for: getProjectDetails Found 2 matching projects:
+
+🏗️ **Detached House - Bondi Beach**
+📍 Address: 45 Campbell Parade, Bondi Beach NSW 2026, Bondi Beach, NSW 2026
+📊 Status: concept
+📈 Progress: 0%
+🏢 Type: residential
+📅 Created: 6/8/2025
+🏗️ Scale: medium
+🏢 Building Class: 1a
+🆔 Project ID: ddcb5966-d16c-4d03-a6bd-97e1292fbe11
+
+──────────────────────────────────────────────────
+
+🏗️ **Detached House**
+📍 Address: 45 Campbell Parade, Bondi Beach, NSW 2026
+📊 Status: concept
+📈 Progress: 0%
+🏢 Type: residential
+📅 Created: 6/8/2025
+🏗️ Scale: medium
+🏢 Building Class: 1a
+🆔 Project ID: ec358fd4-56b6-48d9-9c90-8282cf188ee5
+🔍 Project Agent returning: {
+  "success": true,
+  "message": "I'll help you find information about the detached house project using the getProjectDetails function.I found two residential projects matching your search for \"detached house\":\n\n1. \"Detached House - Bondi Beach\"\n2. \"Detached House\"\n\nBoth projects are:\n- Currently in the concept phase\n- Located in Bondi Beach, NSW\n- Classified as medium-scale residential projects\n- Building Class 1a (typical classification for single residential dwellings)\n- At 0% progress\n- Scheduled to start in June 2025\n\nWould you like me to:\n1. Show more detailed information about either of these specific projects?\n2. Compare the differences between them?\n3. Look up any related tasks or contacts for these projects?\n\nJust let me know what additional information would be most helpful for you.\n\n📋 **Project Details:**\n🆔 Project ID: ddcb5966-d16c-4d03-a6bd-97e1292fbe11\n🆔 Project ID: ec358fd4-56b6-48d9-9c90-8282cf188ee5\n",
+  "data": {
+    "projects": [],
+    "statistics": null,
+    "operations": []
+  },
+  "metadata": {
+    "agent": "project",
+    "intent": "project-retrieval",
+    "confidence": 0.9,
+    "processingTime": 7318,
+    "toolsUsed": [
+      "getProjectDetails"
+    ]
+  },
+  "suggestions": [
+    "Update project status or details",
+    "View related tasks or documents",
+    "Check project progress",
+    "See similar projects"
+  ]
+}
+✅ Master Agent completed in 10912ms
+🤖 Generating Claude response...
+🔍 Agent Response Structure for Claude: {
+  "success": true,
+  "message": "I'll help you find information about the detached house project using the getProjectDetails function.I found two residential projects matching your search for \"detached house\":\n\n1. \"Detached House - Bondi Beach\"\n2. \"Detached House\"\n\nBoth projects are:\n- Currently in the concept phase\n- Located in Bondi Beach, NSW\n- Classified as medium-scale residential projects\n- Building Class 1a (typical classification for single residential dwellings)\n- At 0% progress\n- Scheduled to start in June 2025\n\nWould you like me to:\n1. Show more detailed information about either of these specific projects?\n2. Compare the differences between them?\n3. Look up any related tasks or contacts for these projects?\n\nJust let me know what additional information would be most helpful for you.\n\n📋 **Project Details:**\n🆔 Project ID: ddcb5966-d16c-4d03-a6bd-97e1292fbe11\n🆔 Project ID: ec358fd4-56b6-48d9-9c90-8282cf188ee5\n",
+  "data": {
+    "projects": [],
+    "statistics": null,
+    "operations": []
+  },
+  "metadata": {
+    "agent": "project",
+    "intent": "project-retrieval",
+    "confidence": 0.9,
+    "processingTime": 7318,
+    "toolsUsed": [
+      "getProjectDetails"
+    ],
+    "masterAgent": {
+      "intent": "project-retrieval",
+      "confidence": 0.9,
+      "processingTime": 10912,
+      "routing": {
+        "agent": "project",
+        "reason": "Project-related intent requires Project Agent expertise"
+      }
+    }
+  },
+  "suggestions": [
+    "Update project status or details",
+    "View related tasks or documents",
+    "Check project progress",
+    "See similar projects"
+  ]
+}
+✅ Chat request completed in 10966ms
+ POST /api/chat 200 in 14749ms
+🎯 Processing chat request for user 44477617-b5e9-4cf5-8612-b2e1461a8301
+❌ Invalid request: Last message must be from user
+ POST /api/chat 400 in 80ms
+🎯 Processing chat request for user 44477617-b5e9-4cf5-8612-b2e1461a8301
+💬 User message: "Okay and I need manufacturing project as well"
+📝 Conversation history: 2 messages
+🎯 Handing off to Master Agent...
+🎯 Master Agent processing message: Okay and I need manufacturing project as well
+🎯 Classifying intent for message: "Okay and I need manufacturing project as well"
+✅ Intent classified as: project-retrieval (confidence: 0.85)
+🤔 Reasoning: Given the context and the phrase "as well", this appears to be a follow-up request to view additional project information, specifically for a manufacturing project. The user is requesting to retrieve/view details of a specific type of project (manufacturing) after previously viewing detached house projects. The word "need" in this context implies they want to see/retrieve the project information.
+📝 Extracted entities: { projectType: 'manufacturing' }
+🎯 Intent classified as: project-retrieval (confidence: 0.85)
+🎯 Routing to Project Agent
+🏗️ Project Agent processing: project-retrieval
+🔍 Executing getProjectDetails tool for: "detached house"
+🔍 Searching for projects with identifier: "detached house"
+🏷️ Searching by project name
+✅ Found 2 matching projects
+🔍 Executing getProjectDetails tool for: "manufacturing"
+🔍 Searching for projects with identifier: "manufacturing"
+🏷️ Searching by project name
+✅ Found 2 matching projects
+🔍 Project Agent - Raw tool results from DB: [
+  {
+    "type": "tool-result",
+    "toolCallId": "toolu_015b57gefDJTPuKvVu8iC9T8",
+    "toolName": "getProjectDetails",
+    "args": {
+      "identifier": "detached house",
+      "limit": 10,
+      "offset": 0,
+      "includeRelated": true
+    },
+    "result": "Found 2 matching projects:\n\n🏗️ **Detached House - Bondi Beach**\n📍 Address: 45 Campbell Parade, Bondi Beach NSW 2026, Bondi Beach, NSW 2026\n📊 Status: concept\n📈 Progress: 0%\n🏢 Type: residential\n📅 Created: 6/8/2025\n🏗️ Scale: medium\n🏢 Building Class: 1a\n🆔 Project ID: ddcb5966-d16c-4d03-a6bd-97e1292fbe11\n\n──────────────────────────────────────────────────\n\n🏗️ **Detached House**\n📍 Address: 45 Campbell Parade, Bondi Beach, NSW 2026\n📊 Status: concept\n📈 Progress: 0%\n🏢 Type: residential\n📅 Created: 6/8/2025\n🏗️ Scale: medium\n🏢 Building Class: 1a\n🆔 Project ID: ec358fd4-56b6-48d9-9c90-8282cf188ee5"
+  },
+  {
+    "type": "tool-result",
+    "toolCallId": "toolu_01AsLTgmYRCT4vjR4PxY1Mo6",
+    "toolName": "getProjectDetails",
+    "args": {
+      "identifier": "manufacturing",
+      "limit": 10,
+      "offset": 0,
+      "includeRelated": true
+    },
+    "result": "Found 2 matching projects:\n\n🏗️ **Manufacturing Facility - Parramatta**\n📍 Address: 567 Church Street, Parramatta, NSW 2150\n📊 Status: concept\n📈 Progress: 0%\n🏢 Type: industrial\n📅 Created: 6/8/2025\n🏗️ Scale: major\n🏢 Building Class: 8\n🆔 Project ID: 3bab743d-3fbd-4068-8a9a-2c31deeef77c\n\n──────────────────────────────────────────────────\n\n🏗️ **Manufacturing Facility**\n📍 Address: 567 Church Street, Parramatta NSW 2150, Parramatta, NSW 2150\n📊 Status: concept\n📈 Progress: 0%\n🏢 Type: industrial\n📅 Created: 6/8/2025\n🏗️ Scale: major\n🏢 Building Class: 8\n🆔 Project ID: d13414fe-8656-488b-bba1-587d196dd534"
+  }
+]
+🔧 toolResults type: object length: 2
+🔍 Processing tool result for: getProjectDetails Found 2 matching projects:
+
+🏗️ **Detached House - Bondi Beach**
+📍 Address: 45 Campbell Parade, Bondi Beach NSW 2026, Bondi Beach, NSW 2026
+📊 Status: concept
+📈 Progress: 0%
+🏢 Type: residential
+📅 Created: 6/8/2025
+🏗️ Scale: medium
+🏢 Building Class: 1a
+🆔 Project ID: ddcb5966-d16c-4d03-a6bd-97e1292fbe11
+
+──────────────────────────────────────────────────
+
+🏗️ **Detached House**
+📍 Address: 45 Campbell Parade, Bondi Beach, NSW 2026
+📊 Status: concept
+📈 Progress: 0%
+🏢 Type: residential
+📅 Created: 6/8/2025
+🏗️ Scale: medium
+🏢 Building Class: 1a
+🆔 Project ID: ec358fd4-56b6-48d9-9c90-8282cf188ee5
+🔍 Processing tool result for: getProjectDetails Found 2 matching projects:
+
+🏗️ **Manufacturing Facility - Parramatta**
+📍 Address: 567 Church Street, Parramatta, NSW 2150
+📊 Status: concept
+📈 Progress: 0%
+🏢 Type: industrial
+📅 Created: 6/8/2025
+🏗️ Scale: major
+🏢 Building Class: 8
+🆔 Project ID: 3bab743d-3fbd-4068-8a9a-2c31deeef77c
+
+──────────────────────────────────────────────────
+
+🏗️ **Manufacturing Facility**
+📍 Address: 567 Church Street, Parramatta NSW 2150, Parramatta, NSW 2150
+📊 Status: concept
+📈 Progress: 0%
+🏢 Type: industrial
+📅 Created: 6/8/2025
+🏗️ Scale: major
+🏢 Building Class: 8
+🆔 Project ID: d13414fe-8656-488b-bba1-587d196dd534
+🔍 Project Agent returning: {
+  "success": true,
+  "message": "I'll help you find information about both the detached house and manufacturing projects. Let me search for these using the getProjectDetails function.I've found information about both types of projects. Let me summarize what I found:\n\nDetached House Projects (2):\n1. \"Detached House - Bondi Beach\" at 45 Campbell Parade\n2. \"Detached House\" also at 45 Campbell Parade\nBoth are residential projects in concept phase, building class 1a.\n\nManufacturing Projects (2):\n1. \"Manufacturing Facility - Parramatta\" at 567 Church Street\n2. \"Manufacturing Facility\" also at 567 Church Street\nBoth are industrial projects in concept phase, building class 8.\n\nAll projects are currently in the concept phase with 0% progress. The manufacturing facilities are classified as \"major\" scale projects, while the detached houses are \"medium\" scale projects.\n\nWould you like me to focus on any specific aspect of these projects or would you like additional information about any of them?\n\n📋 **Project Details:**\n🆔 Project ID: ddcb5966-d16c-4d03-a6bd-97e1292fbe11\n🆔 Project ID: ec358fd4-56b6-48d9-9c90-8282cf188ee5\n🆔 Project ID: 3bab743d-3fbd-4068-8a9a-2c31deeef77c\n🆔 Project ID: d13414fe-8656-488b-bba1-587d196dd534\n",
+  "data": {
+    "projects": [],
+    "statistics": null,
+    "operations": []
+  },
+  "metadata": {
+    "agent": "project",
+    "intent": "project-retrieval",
+    "confidence": 0.85,
+    "processingTime": 9199,
+    "toolsUsed": [
+      "getProjectDetails",
+      "getProjectDetails"
+    ]
+  },
+  "suggestions": [
+    "Update project status or details",
+    "View related tasks or documents",
+    "Check project progress",
+    "See similar projects"
+  ]
+}
+✅ Master Agent completed in 13425ms
+🤖 Generating Claude response...
+🔍 Agent Response Structure for Claude: {
+  "success": true,
+  "message": "I'll help you find information about both the detached house and manufacturing projects. Let me search for these using the getProjectDetails function.I've found information about both types of projects. Let me summarize what I found:\n\nDetached House Projects (2):\n1. \"Detached House - Bondi Beach\" at 45 Campbell Parade\n2. \"Detached House\" also at 45 Campbell Parade\nBoth are residential projects in concept phase, building class 1a.\n\nManufacturing Projects (2):\n1. \"Manufacturing Facility - Parramatta\" at 567 Church Street\n2. \"Manufacturing Facility\" also at 567 Church Street\nBoth are industrial projects in concept phase, building class 8.\n\nAll projects are currently in the concept phase with 0% progress. The manufacturing facilities are classified as \"major\" scale projects, while the detached houses are \"medium\" scale projects.\n\nWould you like me to focus on any specific aspect of these projects or would you like additional information about any of them?\n\n📋 **Project Details:**\n🆔 Project ID: ddcb5966-d16c-4d03-a6bd-97e1292fbe11\n🆔 Project ID: ec358fd4-56b6-48d9-9c90-8282cf188ee5\n🆔 Project ID: 3bab743d-3fbd-4068-8a9a-2c31deeef77c\n🆔 Project ID: d13414fe-8656-488b-bba1-587d196dd534\n",
+  "data": {
+    "projects": [],
+    "statistics": null,
+    "operations": []
+  },
+  "metadata": {
+    "agent": "project",
+    "intent": "project-retrieval",
+    "confidence": 0.85,
+    "processingTime": 9199,
+    "toolsUsed": [
+      "getProjectDetails",
+      "getProjectDetails"
+    ],
+    "masterAgent": {
+      "intent": "project-retrieval",
+      "confidence": 0.85,
+      "processingTime": 13425,
+      "routing": {
+        "agent": "project",
+        "reason": "Project-related intent requires Project Agent expertise"
+      }
+    }
+  },
+  "suggestions": [
+    "Update project status or details",
+    "View related tasks or documents",
+    "Check project progress",
+    "See similar projects"
+  ]
+}
+✅ Chat request completed in 13483ms
+ POST /api/chat 200 in 17735ms
+🎯 Processing chat request for user 44477617-b5e9-4cf5-8612-b2e1461a8301
+❌ Invalid request: Last message must be from user
+ POST /api/chat 400 in 78ms
+ ○ Compiling /projects/active ...
+ ✓ Compiled /projects/active in 1145ms
+ GET /projects/active 200 in 1185ms
+ GET /projects/2e003c68-cadf-4f8e-ad77-ee9fad75f10d 200 in 51ms
+🎯 Processing chat request for user 44477617-b5e9-4cf5-8612-b2e1461a8301
+💬 User message: "Show me aged care facility block"
+📝 Conversation history: 0 messages
+🎯 Handing off to Master Agent...
+🎯 Master Agent processing message: Show me aged care facility block
+🎯 Classifying intent for message: "Show me aged care facility block"
+✅ Intent classified as: project-retrieval (confidence: 0.9)
+🤔 Reasoning: The user is clearly requesting to view specific details about a particular project - the "aged care facility block". The phrase "Show me" indicates they want to retrieve/view information about this specific project rather than listing multiple projects. This is a direct request for a single project's details, making it a clear project-retrieval intent.
+📝 Extracted entities: { projectName: 'aged care facility block' }
+🎯 Intent classified as: project-retrieval (confidence: 0.9)
+🎯 Routing to Project Agent
+🏗️ Project Agent processing: project-retrieval
+🔍 Executing getProjectDetails tool for: "aged care facility block"
+🔍 Searching for projects with identifier: "aged care facility block"
+🏷️ Searching by project name
+✅ Found 0 matching projects
+🔍 Executing getProjectDetails tool for: "aged care"
+🔍 Searching for projects with identifier: "aged care"
+🏷️ Searching by project name
+✅ Found 1 matching projects
+🔍 Project Agent - Raw tool results from DB: [
+  {
+    "type": "tool-result",
+    "toolCallId": "toolu_019JLhajWzZHqsgDSegfmivS",
+    "toolName": "getProjectDetails",
+    "args": {
+      "identifier": "aged care facility block",
+      "limit": 10,
+      "offset": 0,
+      "includeRelated": false
+    },
+    "result": "❌ No projects found matching \"aged care facility block\". Please check the spelling or try a different search term."
+  },
+  {
+    "type": "tool-result",
+    "toolCallId": "toolu_01DLbsQWtUZyc5GpeQPjN31i",
+    "toolName": "getProjectDetails",
+    "args": {
+      "identifier": "aged care",
+      "limit": 10,
+      "offset": 0,
+      "includeRelated": false
+    },
+    "result": "Found 1 matching project:\n\n🏗️ **Aged Care Facility Extension**\n📍 Address: 234 Pacific Highwayyy, Hornsby, NSW 2077\n📊 Status: da_preparation\n📈 Progress: 30%\n🏢 Type: commercial\n📅 Created: 6/10/2025\n🏗️ Scale: large\n🏢 Building Class: Class 1b\n🆔 Project ID: 2e003c68-cadf-4f8e-ad77-ee9fad75f10d"
+  }
+]
+🔧 toolResults type: object length: 2
+🔍 Processing tool result for: getProjectDetails ❌ No projects found matching "aged care facility block". Please check the spelling or try a different search term.
+🔍 Processing tool result for: getProjectDetails Found 1 matching project:
+
+🏗️ **Aged Care Facility Extension**
+📍 Address: 234 Pacific Highwayyy, Hornsby, NSW 2077
+📊 Status: da_preparation
+📈 Progress: 30%
+🏢 Type: commercial
+📅 Created: 6/10/2025
+🏗️ Scale: large
+🏢 Building Class: Class 1b
+🆔 Project ID: 2e003c68-cadf-4f8e-ad77-ee9fad75f10d
+🔍 Project Agent returning: {
+  "success": true,
+  "message": "I'll help you find information about the aged care facility block project. Let me search for projects matching this description.Let me try a broader search to see if there are any projects with similar names.I found an aged care related project and will display its details for you. The project is called \"Aged Care Facility Extension\" and is currently in the DA (Development Application) preparation phase.\n\nHere are the key details:\n- Location: 234 Pacific Highway, Hornsby, NSW\n- Current Progress: 30% complete\n- Project Type: Commercial\n- Building Class: Class 1b\n- Scale: Large\n- Status: DA Preparation\n\nWould you like to know more specific details about this project or see related tasks and contacts? I can retrieve that additional information if needed.\n\n📋 **Project Details:**\n🆔 Project ID: 2e003c68-cadf-4f8e-ad77-ee9fad75f10d\n",
+  "data": {
+    "projects": [],
+    "statistics": null,
+    "operations": []
+  },
+  "metadata": {
+    "agent": "project",
+    "intent": "project-retrieval",
+    "confidence": 0.9,
+    "processingTime": 8877,
+    "toolsUsed": [
+      "getProjectDetails",
+      "getProjectDetails"
+    ]
+  },
+  "suggestions": [
+    "Update project status or details",
+    "View related tasks or documents",
+    "Check project progress",
+    "See similar projects"
+  ]
+}
+✅ Master Agent completed in 12511ms
+🤖 Generating Claude response...
+🔍 Agent Response Structure for Claude: {
+  "success": true,
+  "message": "I'll help you find information about the aged care facility block project. Let me search for projects matching this description.Let me try a broader search to see if there are any projects with similar names.I found an aged care related project and will display its details for you. The project is called \"Aged Care Facility Extension\" and is currently in the DA (Development Application) preparation phase.\n\nHere are the key details:\n- Location: 234 Pacific Highway, Hornsby, NSW\n- Current Progress: 30% complete\n- Project Type: Commercial\n- Building Class: Class 1b\n- Scale: Large\n- Status: DA Preparation\n\nWould you like to know more specific details about this project or see related tasks and contacts? I can retrieve that additional information if needed.\n\n📋 **Project Details:**\n🆔 Project ID: 2e003c68-cadf-4f8e-ad77-ee9fad75f10d\n",
+  "data": {
+    "projects": [],
+    "statistics": null,
+    "operations": []
+  },
+  "metadata": {
+    "agent": "project",
+    "intent": "project-retrieval",
+    "confidence": 0.9,
+    "processingTime": 8877,
+    "toolsUsed": [
+      "getProjectDetails",
+      "getProjectDetails"
+    ],
+    "masterAgent": {
+      "intent": "project-retrieval",
+      "confidence": 0.9,
+      "processingTime": 12511,
+      "routing": {
+        "agent": "project",
+        "reason": "Project-related intent requires Project Agent expertise"
+      }
+    }
+  },
+  "suggestions": [
+    "Update project status or details",
+    "View related tasks or documents",
+    "Check project progress",
+    "See similar projects"
+  ]
+}
+✅ Chat request completed in 12559ms
+ POST /api/chat 200 in 16189ms
+🎯 Processing chat request for user 44477617-b5e9-4cf5-8612-b2e1461a8301
+❌ Invalid request: Last message must be from user
+ POST /api/chat 400 in 75ms
+🎯 Processing chat request for user 44477617-b5e9-4cf5-8612-b2e1461a8301
+💬 User message: "OKay can you change the name of aged care facility extension to aged care facility new build"
+📝 Conversation history: 2 messages
+🎯 Handing off to Master Agent...
+🎯 Master Agent processing message: OKay can you change the name of aged care facility extension to aged care facility new build
+🎯 Classifying intent for message: "OKay can you change the name of aged care facility extension to aged care facility new build"
+✅ Intent classified as: project-update (confidence: 0.95)
+🤔 Reasoning: The user is clearly requesting to modify an existing project by changing its name from "aged care facility extension" to "aged care facility new build". This is a straightforward project update request with a specific change to the project name field.
+📝 Extracted entities: { projectName: 'aged care facility extension', action: 'name change' }
+🎯 Intent classified as: project-update (confidence: 0.95)
+🎯 Routing to Project Agent
+🏗️ Project Agent processing: project-update
+📝 Executing updateExistingProject tool for project: 2e003c68-cadf-4f8e-ad77-ee9fad75f10d
+📝 Updating project 2e003c68-cadf-4f8e-ad77-ee9fad75f10d: { name: 'Aged Care Facility New Build' }
+✅ Successfully updated project: Aged Care Facility New Build
+🔍 Executing getProjectDetails tool for: "2e003c68-cadf-4f8e-ad77-ee9fad75f10d"
+🔍 Searching for projects with identifier: "2e003c68-cadf-4f8e-ad77-ee9fad75f10d"
+🆔 Searching by project ID
+✅ Found 1 matching projects
+🔍 Project Agent - Raw tool results from DB: [
+  {
+    "type": "tool-result",
+    "toolCallId": "toolu_01TMpb5XZuv2jWEfpmowYYZs",
+    "toolName": "updateExistingProject",
+    "args": {
+      "id": "2e003c68-cadf-4f8e-ad77-ee9fad75f10d",
+      "name": "Aged Care Facility New Build"
+    },
+    "result": "✅ Successfully updated project: **Aged Care Facility New Build**\n\n🔄 Updated fields: name\n\n📋 Current Project Details:\n📍 Address: 234 Pacific Highwayyy\n🏢 Type: commercial\n📊 Status: da_preparation\n📈 Progress: 30%\n📅 Last Updated: 6/26/2025, 12:50:32 PM\n\nThe project has been updated successfully."
+  },
+  {
+    "type": "tool-result",
+    "toolCallId": "toolu_0154BXM4M2tK91nWAq7PuWcn",
+    "toolName": "getProjectDetails",
+    "args": {
+      "identifier": "2e003c68-cadf-4f8e-ad77-ee9fad75f10d",
+      "limit": 10,
+      "offset": 0,
+      "includeRelated": false
+    },
+    "result": "Found 1 matching project:\n\n🏗️ **Aged Care Facility New Build**\n📍 Address: 234 Pacific Highwayyy, Hornsby, NSW 2077\n📊 Status: da_preparation\n📈 Progress: 30%\n🏢 Type: commercial\n📅 Created: 6/10/2025\n🏗️ Scale: large\n🏢 Building Class: Class 1b\n🆔 Project ID: 2e003c68-cadf-4f8e-ad77-ee9fad75f10d"
+  }
+]
+🔧 toolResults type: object length: 2
+🔍 Processing tool result for: updateExistingProject ✅ Successfully updated project: **Aged Care Facility New Build**
+
+🔄 Updated fields: name
+
+📋 Current Project Details:
+📍 Address: 234 Pacific Highwayyy
+🏢 Type: commercial
+📊 Status: da_preparation
+📈 Progress: 30%
+📅 Last Updated: 6/26/2025, 12:50:32 PM
+
+The project has been updated successfully.
+🔍 Processing tool result for: getProjectDetails Found 1 matching project:
+
+🏗️ **Aged Care Facility New Build**
+📍 Address: 234 Pacific Highwayyy, Hornsby, NSW 2077
+📊 Status: da_preparation
+📈 Progress: 30%
+🏢 Type: commercial
+📅 Created: 6/10/2025
+🏗️ Scale: large
+🏢 Building Class: Class 1b
+🆔 Project ID: 2e003c68-cadf-4f8e-ad77-ee9fad75f10d
+🔍 Project Agent returning: {
+  "success": true,
+  "message": "I'll help you update the name of the project from \"Aged Care Facility Extension\" to \"Aged Care Facility New Build\". I'll use the updateExistingProject function to make this change.Let me verify and display the updated project information for you:I've successfully updated the project name from \"Aged Care Facility Extension\" to \"Aged Care Facility New Build\". The project details show that the change has been applied while maintaining all other project information including:\n- Location: 234 Pacific Highwayyy, Hornsby, NSW 2077\n- Current Status: DA Preparation\n- Progress: 30%\n- Project Type: Commercial\n- Building Class: Class 1b\n- Scale: Large\n\nIs there anything else you'd like to know about the updated project?\n\n📋 **Project Details:**\n🆔 Project ID: 2e003c68-cadf-4f8e-ad77-ee9fad75f10d\n",
+  "data": {
+    "projects": [],
+    "statistics": null,
+    "operations": [
+      {
+        "operation": "updateExistingProject",
+        "success": true,
+        "details": "✅ Successfully updated project: **Aged Care Facility New Build**\n\n🔄 Updated fields: name\n\n📋 Current Project Details:\n📍 Address: 234 Pacific Highwayyy\n🏢 Type: commercial\n📊 Status: da_preparation\n📈 Progress: 30%\n📅 Last Updated: 6/26/2025, 12:50:32 PM\n\nThe project has been updated successfully."
+      }
+    ]
+  },
+  "metadata": {
+    "agent": "project",
+    "intent": "project-update",
+    "confidence": 0.95,
+    "processingTime": 8307,
+    "toolsUsed": [
+      "updateExistingProject",
+      "getProjectDetails"
+    ]
+  },
+  "suggestions": [
+    "Review the updated project details",
+    "Notify team members of changes",
+    "Update related tasks if needed",
+    "Check project timeline"
+  ]
+}
+✅ Master Agent completed in 11128ms
+🤖 Generating Claude response...
+🔍 Agent Response Structure for Claude: {
+  "success": true,
+  "message": "I'll help you update the name of the project from \"Aged Care Facility Extension\" to \"Aged Care Facility New Build\". I'll use the updateExistingProject function to make this change.Let me verify and display the updated project information for you:I've successfully updated the project name from \"Aged Care Facility Extension\" to \"Aged Care Facility New Build\". The project details show that the change has been applied while maintaining all other project information including:\n- Location: 234 Pacific Highwayyy, Hornsby, NSW 2077\n- Current Status: DA Preparation\n- Progress: 30%\n- Project Type: Commercial\n- Building Class: Class 1b\n- Scale: Large\n\nIs there anything else you'd like to know about the updated project?\n\n📋 **Project Details:**\n🆔 Project ID: 2e003c68-cadf-4f8e-ad77-ee9fad75f10d\n",
+  "data": {
+    "projects": [],
+    "statistics": null,
+    "operations": [
+      {
+        "operation": "updateExistingProject",
+        "success": true,
+        "details": "✅ Successfully updated project: **Aged Care Facility New Build**\n\n🔄 Updated fields: name\n\n📋 Current Project Details:\n📍 Address: 234 Pacific Highwayyy\n🏢 Type: commercial\n📊 Status: da_preparation\n📈 Progress: 30%\n📅 Last Updated: 6/26/2025, 12:50:32 PM\n\nThe project has been updated successfully."
+      }
+    ]
+  },
+  "metadata": {
+    "agent": "project",
+    "intent": "project-update",
+    "confidence": 0.95,
+    "processingTime": 8307,
+    "toolsUsed": [
+      "updateExistingProject",
+      "getProjectDetails"
+    ],
+    "masterAgent": {
+      "intent": "project-update",
+      "confidence": 0.95,
+      "processingTime": 11128,
+      "routing": {
+        "agent": "project",
+        "reason": "Project-related intent requires Project Agent expertise"
+      }
+    }
+  },
+  "suggestions": [
+    "Review the updated project details",
+    "Notify team members of changes",
+    "Update related tasks if needed",
+    "Check project timeline"
+  ]
+}
+✅ Chat request completed in 11180ms
+ POST /api/chat 200 in 15656ms
+🎯 Processing chat request for user 44477617-b5e9-4cf5-8612-b2e1461a8301
+❌ Invalid request: Last message must be from user
+ POST /api/chat 400 in 77ms
+WARNING: Panel defaultSize prop recommended to avoid layout shift after server rendering
+ GET /playground_ai 200 in 215ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 227ms
+ GET /projects/active 200 in 44ms
+🎯 Processing chat request for user 44477617-b5e9-4cf5-8612-b2e1461a8301
+💬 User message: "Create a new project called Apartment extension then show me the card"
+📝 Conversation history: 0 messages
+🎯 Handing off to Master Agent...
+🎯 Master Agent processing message: Create a new project called Apartment extension then show me the card
+🎯 Classifying intent for message: "Create a new project called Apartment extension then show me the card"
+✅ Intent classified as: project-creation (confidence: 0.85)
+🤔 Reasoning: The message contains two distinct actions, but the primary intent is to create a new project ("Create a new project"). The secondary action ("show me the card") is a UI interaction that would follow the creation. Since project creation is the main operation that needs to happen first, this is classified as project-creation. The high confidence (0.85) reflects the clear creation instruction, though it's not maximum confidence because some project details (type, address) are missing.
+📝 Extracted entities: { projectName: 'Apartment extension', action: 'show' }
+🎯 Intent classified as: project-creation (confidence: 0.85)
+🎯 Routing to Project Agent
+🏗️ Project Agent processing: project-creation
+🔍 Project Agent - Raw tool results from DB: []
+🔧 toolResults type: object length: 0
+🔍 Project Agent returning: {
+  "success": true,
+  "message": "I'll help you create a new project called \"Apartment extension\" and then show you the card. However, I notice that the createNewProject function requires some mandatory parameters that weren't provided in your request. I'll need:\n\n1. address (required)\n2. project_type (required)\n3. user_id (required)\n\nCould you please provide:\n1. The address for the apartment extension project\n2. The type of project (e.g., residential renovation, commercial renovation, etc.)\n3. Your user ID for project creation\n\nOnce you provide these details, I can create the project and show you the card right away.",
+  "data": {
+    "projects": [],
+    "statistics": null,
+    "operations": []
+  },
+  "metadata": {
+    "agent": "project",
+    "intent": "project-creation",
+    "confidence": 0.85,
+    "processingTime": 4498,
+    "toolsUsed": []
+  },
+  "suggestions": [
+    "Add project tasks and milestones",
+    "Upload project documents",
+    "Set up project team members",
+    "Configure project notifications"
+  ]
+}
+✅ Master Agent completed in 9045ms
+🤖 Generating Claude response...
+🔍 Agent Response Structure for Claude: {
+  "success": true,
+  "message": "I'll help you create a new project called \"Apartment extension\" and then show you the card. However, I notice that the createNewProject function requires some mandatory parameters that weren't provided in your request. I'll need:\n\n1. address (required)\n2. project_type (required)\n3. user_id (required)\n\nCould you please provide:\n1. The address for the apartment extension project\n2. The type of project (e.g., residential renovation, commercial renovation, etc.)\n3. Your user ID for project creation\n\nOnce you provide these details, I can create the project and show you the card right away.",
+  "data": {
+    "projects": [],
+    "statistics": null,
+    "operations": []
+  },
+  "metadata": {
+    "agent": "project",
+    "intent": "project-creation",
+    "confidence": 0.85,
+    "processingTime": 4498,
+    "toolsUsed": [],
+    "masterAgent": {
+      "intent": "project-creation",
+      "confidence": 0.85,
+      "processingTime": 9045,
+      "routing": {
+        "agent": "project",
+        "reason": "Project-related intent requires Project Agent expertise"
+      }
+    }
+  },
+  "suggestions": [
+    "Add project tasks and milestones",
+    "Upload project documents",
+    "Set up project team members",
+    "Configure project notifications"
+  ]
+}
+✅ Chat request completed in 9091ms
+ POST /api/chat 200 in 14219ms
+🎯 Processing chat request for user 44477617-b5e9-4cf5-8612-b2e1461a8301
+💬 User message: "Address is 150 Dudlet street and is residential project"
+📝 Conversation history: 2 messages
+🎯 Handing off to Master Agent...
+🎯 Master Agent processing message: Address is 150 Dudlet street and is residential project
+🎯 Classifying intent for message: "Address is 150 Dudlet street and is residential project"
+✅ Intent classified as: project-update (confidence: 0.85)
+🤔 Reasoning: Based on the conversation context, this is clearly a response to the previous request for additional information to create the "Apartment extension" project. The user is providing the missing required details (address and project type) to complete the project creation process. While this could be seen as part of project-creation, since it's providing additional information for an in-progress creation request, it's best classified as a project-update intent.
+📝 Extracted entities: {
+  projectName: 'Apartment extension',
+  address: '150 Dudlet street',
+  projectType: 'residential'
+}
+🎯 Intent classified as: project-update (confidence: 0.85)
+🎯 Routing to Project Agent
+🏗️ Project Agent processing: project-update
+🔍 Executing getProjectDetails tool for: "150 Dudlet street"
+🔍 Searching for projects with identifier: "150 Dudlet street"
+🏷️ Searching by project name
+✅ Found 0 matching projects
+🔍 Project Agent - Raw tool results from DB: [
+  {
+    "type": "tool-result",
+    "toolCallId": "toolu_01VPRptesqVWVCYXSk7n9ERC",
+    "toolName": "getProjectDetails",
+    "args": {
+      "identifier": "150 Dudlet street",
+      "limit": 10,
+      "offset": 0,
+      "includeRelated": false
+    },
+    "result": "❌ No projects found matching \"150 Dudlet street\". Please check the spelling or try a different search term."
+  }
+]
+🔧 toolResults type: object length: 1
+🔍 Processing tool result for: getProjectDetails ❌ No projects found matching "150 Dudlet street". Please check the spelling or try a different search term.
+🔍 Project Agent returning: {
+  "success": true,
+  "message": "I notice that while you've provided the address and project type (residential), I still need a few required parameters to properly create and display this project. However, I can start by searching if this project might already exist and show you what I find.\n\nLet me search for any projects at this address:I see this is indeed a new project location. To create the new project \"Apartment extension\", I'll need:\n\n1. 🆔 User ID - This is required for authorization purposes\n2. 🏢 Organization ID - This helps associate the project with the correct organization\n\nOnce you provide these IDs, I can:\n1. Create the new project with:\n   - Name: \"Apartment extension\"\n   - Address: \"150 Dudlet street\"\n   - Project Type: \"residential\"\n\nThen I'll immediately show you the project card for review.\n\nCould you please provide your User ID and Organization ID? This will allow me to properly create and display the project for you.",
+  "data": {
+    "projects": [],
+    "statistics": null,
+    "operations": []
+  },
+  "metadata": {
+    "agent": "project",
+    "intent": "project-update",
+    "confidence": 0.85,
+    "processingTime": 8754,
+    "toolsUsed": [
+      "getProjectDetails"
+    ]
+  },
+  "suggestions": [
+    "Review the updated project details",
+    "Notify team members of changes",
+    "Update related tasks if needed",
+    "Check project timeline"
+  ]
+}
+✅ Master Agent completed in 13181ms
+🤖 Generating Claude response...
+🔍 Agent Response Structure for Claude: {
+  "success": true,
+  "message": "I notice that while you've provided the address and project type (residential), I still need a few required parameters to properly create and display this project. However, I can start by searching if this project might already exist and show you what I find.\n\nLet me search for any projects at this address:I see this is indeed a new project location. To create the new project \"Apartment extension\", I'll need:\n\n1. 🆔 User ID - This is required for authorization purposes\n2. 🏢 Organization ID - This helps associate the project with the correct organization\n\nOnce you provide these IDs, I can:\n1. Create the new project with:\n   - Name: \"Apartment extension\"\n   - Address: \"150 Dudlet street\"\n   - Project Type: \"residential\"\n\nThen I'll immediately show you the project card for review.\n\nCould you please provide your User ID and Organization ID? This will allow me to properly create and display the project for you.",
+  "data": {
+    "projects": [],
+    "statistics": null,
+    "operations": []
+  },
+  "metadata": {
+    "agent": "project",
+    "intent": "project-update",
+    "confidence": 0.85,
+    "processingTime": 8754,
+    "toolsUsed": [
+      "getProjectDetails"
+    ],
+    "masterAgent": {
+      "intent": "project-update",
+      "confidence": 0.85,
+      "processingTime": 13181,
+      "routing": {
+        "agent": "project",
+        "reason": "Project-related intent requires Project Agent expertise"
+      }
+    }
+  },
+  "suggestions": [
+    "Review the updated project details",
+    "Notify team members of changes",
+    "Update related tasks if needed",
+    "Check project timeline"
+  ]
+}
+✅ Chat request completed in 13232ms
+ POST /api/chat 200 in 19400ms
+🎯 Processing chat request for user 44477617-b5e9-4cf5-8612-b2e1461a8301
+💬 User message: "Create a new project called Apartment extension then show me the card. Address 150 Dudley Street, and is residential project"
+📝 Conversation history: 4 messages
+🎯 Handing off to Master Agent...
+🎯 Master Agent processing message: Create a new project called Apartment extension then show me the card. Address 150 Dudley Street, and is residential project
+🎯 Classifying intent for message: "Create a new project called Apartment extension then show me the card. Address 150 Dudley Street, and is residential project"
+✅ Intent classified as: project-creation (confidence: 0.95)
+🤔 Reasoning: The user explicitly requests to "Create a new project" with specific details including project name, address, and type. The primary action is creation, even though there's a secondary request to show the card afterward.
+📝 Extracted entities: {
+  projectName: 'Apartment extension',
+  address: '150 Dudley Street',
+  projectType: 'residential'
+}
+🎯 Intent classified as: project-creation (confidence: 0.95)
+🎯 Routing to Project Agent
+🏗️ Project Agent processing: project-creation
+🔍 Project Agent - Raw tool results from DB: []
+🔧 toolResults type: object length: 0
+🔍 Project Agent returning: {
+  "success": true,
+  "message": "I notice that I still need one critical required parameter to create this project - the user_id. This is a mandatory field according to the createNewProject function specification. Without a valid user ID, I cannot proceed with creating the project.\n\nHere's what I have so far from your request:\n- Name: \"Apartment extension\"\n- Address: \"150 Dudley Street\"\n- Project Type: \"residential\"\n- Status: Will default to \"planning\"\n- Progress: Will default to 0\n\nCould you please provide your user ID? Once you provide this, I can:\n1. Create the project with the provided details\n2. Retrieve the newly created project\n3. Show you the project card immediately\n\nThe organization_id is optional, so we don't need to worry about that, but the user_id is required by the system for project creation. Please share your user ID and I'll help you set this up right away! 🏗️",
+  "data": {
+    "projects": [],
+    "statistics": null,
+    "operations": []
+  },
+  "metadata": {
+    "agent": "project",
+    "intent": "project-creation",
+    "confidence": 0.95,
+    "processingTime": 5907,
+    "toolsUsed": []
+  },
+  "suggestions": [
+    "Add project tasks and milestones",
+    "Upload project documents",
+    "Set up project team members",
+    "Configure project notifications"
+  ]
+}
+✅ Master Agent completed in 9401ms
+🤖 Generating Claude response...
+🔍 Agent Response Structure for Claude: {
+  "success": true,
+  "message": "I notice that I still need one critical required parameter to create this project - the user_id. This is a mandatory field according to the createNewProject function specification. Without a valid user ID, I cannot proceed with creating the project.\n\nHere's what I have so far from your request:\n- Name: \"Apartment extension\"\n- Address: \"150 Dudley Street\"\n- Project Type: \"residential\"\n- Status: Will default to \"planning\"\n- Progress: Will default to 0\n\nCould you please provide your user ID? Once you provide this, I can:\n1. Create the project with the provided details\n2. Retrieve the newly created project\n3. Show you the project card immediately\n\nThe organization_id is optional, so we don't need to worry about that, but the user_id is required by the system for project creation. Please share your user ID and I'll help you set this up right away! 🏗️",
+  "data": {
+    "projects": [],
+    "statistics": null,
+    "operations": []
+  },
+  "metadata": {
+    "agent": "project",
+    "intent": "project-creation",
+    "confidence": 0.95,
+    "processingTime": 5907,
+    "toolsUsed": [],
+    "masterAgent": {
+      "intent": "project-creation",
+      "confidence": 0.95,
+      "processingTime": 9401,
+      "routing": {
+        "agent": "project",
+        "reason": "Project-related intent requires Project Agent expertise"
+      }
+    }
+  },
+  "suggestions": [
+    "Add project tasks and milestones",
+    "Upload project documents",
+    "Set up project team members",
+    "Configure project notifications"
+  ]
+}
+✅ Chat request completed in 9448ms
+ POST /api/chat 200 in 16587ms
+WARNING: Panel defaultSize prop recommended to avoid layout shift after server rendering
+ GET /playground_ai 200 in 141ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 231ms
+ GET /projects/0c33ec52-9d94-49c9-b3b9-c1902c89188f 200 in 40ms
+ GET /projects/active 200 in 45ms
+🎯 Processing chat request for user 44477617-b5e9-4cf5-8612-b2e1461a8301
+💬 User message: "Show the apartment complex project information"
+📝 Conversation history: 0 messages
+🎯 Handing off to Master Agent...
+🎯 Master Agent processing message: Show the apartment complex project information
+🎯 Classifying intent for message: "Show the apartment complex project information"
+✅ Intent classified as: project-retrieval (confidence: 0.95)
+🤔 Reasoning: The user is clearly requesting to view specific information about a single project (the apartment complex project). The phrase "show... information" directly indicates a retrieval request rather than a listing of multiple projects. The request is unambiguous and includes a specific project name.
+📝 Extracted entities: { projectName: 'apartment complex' }
+🎯 Intent classified as: project-retrieval (confidence: 0.95)
+🎯 Routing to Project Agent
+🏗️ Project Agent processing: project-retrieval
+🔍 Executing getProjectDetails tool for: "apartment complex"
+🔍 Searching for projects with identifier: "apartment complex"
+🏷️ Searching by project name
+✅ Found 2 matching projects
+🔍 Project Agent - Raw tool results from DB: [
+  {
+    "type": "tool-result",
+    "toolCallId": "toolu_01J5nrDZRCWS3qC9jkhaTYxu",
+    "toolName": "getProjectDetails",
+    "args": {
+      "identifier": "apartment complex",
+      "limit": 10,
+      "offset": 0,
+      "includeRelated": false
+    },
+    "result": "Found 2 matching projects:\n\n🏗️ **Apartment Complex - Melbourne**\n📍 Address: 789 Collins Street, Melbourne VIC 3000, Melbourne, VIC 3000\n📊 Status: concept\n📈 Progress: 0%\n🏢 Type: residential\n📅 Created: 6/8/2025\n🏗️ Scale: large\n🏢 Building Class: 2\n🆔 Project ID: 0c33ec52-9d94-49c9-b3b9-c1902c89188f\n\n──────────────────────────────────────────────────\n\n🏗️ **Apartment Complex - Melbourne**\n📍 Address: 789 Collins Street, Melbourne VIC 3000, Melbourne, VIC 3000\n📊 Status: concept\n📈 Progress: 0%\n🏢 Type: residential\n📅 Created: 6/8/2025\n🏗️ Scale: large\n🏢 Building Class: 2\n🆔 Project ID: 0ebe84c1-fea2-41b3-b8eb-0b406252a804"
+  }
+]
+🔧 toolResults type: object length: 1
+🔍 Processing tool result for: getProjectDetails Found 2 matching projects:
+
+🏗️ **Apartment Complex - Melbourne**
+📍 Address: 789 Collins Street, Melbourne VIC 3000, Melbourne, VIC 3000
+📊 Status: concept
+📈 Progress: 0%
+🏢 Type: residential
+📅 Created: 6/8/2025
+🏗️ Scale: large
+🏢 Building Class: 2
+🆔 Project ID: 0c33ec52-9d94-49c9-b3b9-c1902c89188f
+
+──────────────────────────────────────────────────
+
+🏗️ **Apartment Complex - Melbourne**
+📍 Address: 789 Collins Street, Melbourne VIC 3000, Melbourne, VIC 3000
+📊 Status: concept
+📈 Progress: 0%
+🏢 Type: residential
+📅 Created: 6/8/2025
+🏗️ Scale: large
+🏢 Building Class: 2
+🆔 Project ID: 0ebe84c1-fea2-41b3-b8eb-0b406252a804
+🔍 Project Agent returning: {
+  "success": true,
+  "message": "I'll help you find information about the apartment complex project using the getProjectDetails function since we're looking for a specific project.I found two apartment complex projects in Melbourne. Both projects are currently in the concept phase and share similar characteristics:\n\nLocation: 789 Collins Street, Melbourne VIC 3000\nStatus: Concept phase\nProgress: 0%\nType: Residential\nScale: Large\nBuilding Class: 2\nExpected Start: June 8, 2025\n\nSince these projects appear to be duplicates in the system (they have identical details but different Project IDs), I would recommend:\n\n1. Reviewing both projects to determine if they are indeed duplicates\n2. Checking with the project team to confirm which Project ID is the correct one to use\n3. Considering consolidating these entries if they are duplicates\n\nWould you like me to:\n1. Show more detailed information about either of these projects?\n2. Look up any related tasks or contacts for these projects?\n3. Check the project statistics to see if this is part of a larger portfolio?\n\nJust let me know what additional information would be most helpful!\n\n📋 **Project Details:**\n🆔 Project ID: 0c33ec52-9d94-49c9-b3b9-c1902c89188f\n🆔 Project ID: 0ebe84c1-fea2-41b3-b8eb-0b406252a804\n",
+  "data": {
+    "projects": [],
+    "statistics": null,
+    "operations": []
+  },
+  "metadata": {
+    "agent": "project",
+    "intent": "project-retrieval",
+    "confidence": 0.95,
+    "processingTime": 9013,
+    "toolsUsed": [
+      "getProjectDetails"
+    ]
+  },
+  "suggestions": [
+    "Update project status or details",
+    "View related tasks or documents",
+    "Check project progress",
+    "See similar projects"
+  ]
+}
+✅ Master Agent completed in 13099ms
+🤖 Generating Claude response...
+🔍 Agent Response Structure for Claude: {
+  "success": true,
+  "message": "I'll help you find information about the apartment complex project using the getProjectDetails function since we're looking for a specific project.I found two apartment complex projects in Melbourne. Both projects are currently in the concept phase and share similar characteristics:\n\nLocation: 789 Collins Street, Melbourne VIC 3000\nStatus: Concept phase\nProgress: 0%\nType: Residential\nScale: Large\nBuilding Class: 2\nExpected Start: June 8, 2025\n\nSince these projects appear to be duplicates in the system (they have identical details but different Project IDs), I would recommend:\n\n1. Reviewing both projects to determine if they are indeed duplicates\n2. Checking with the project team to confirm which Project ID is the correct one to use\n3. Considering consolidating these entries if they are duplicates\n\nWould you like me to:\n1. Show more detailed information about either of these projects?\n2. Look up any related tasks or contacts for these projects?\n3. Check the project statistics to see if this is part of a larger portfolio?\n\nJust let me know what additional information would be most helpful!\n\n📋 **Project Details:**\n🆔 Project ID: 0c33ec52-9d94-49c9-b3b9-c1902c89188f\n🆔 Project ID: 0ebe84c1-fea2-41b3-b8eb-0b406252a804\n",
+  "data": {
+    "projects": [],
+    "statistics": null,
+    "operations": []
+  },
+  "metadata": {
+    "agent": "project",
+    "intent": "project-retrieval",
+    "confidence": 0.95,
+    "processingTime": 9013,
+    "toolsUsed": [
+      "getProjectDetails"
+    ],
+    "masterAgent": {
+      "intent": "project-retrieval",
+      "confidence": 0.95,
+      "processingTime": 13099,
+      "routing": {
+        "agent": "project",
+        "reason": "Project-related intent requires Project Agent expertise"
+      }
+    }
+  },
+  "suggestions": [
+    "Update project status or details",
+    "View related tasks or documents",
+    "Check project progress",
+    "See similar projects"
+  ]
+}
+✅ Chat request completed in 13141ms
+ POST /api/chat 200 in 17911ms
+🎯 Processing chat request for user 44477617-b5e9-4cf5-8612-b2e1461a8301
+❌ Invalid request: Last message must be from user
+ POST /api/chat 400 in 89ms
