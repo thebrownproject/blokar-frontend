@@ -2,11 +2,7 @@ import { SidebarApp } from "@/components/layout/sidebar";
 import { TopBarApp } from "@/components/layout/topbar";
 import { ResizablePanelLayout } from "@/components/layout/resizable-layout";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { PanelProvider } from "@/hooks/use-panel";
-import { WorkspaceProvider } from "@/hooks/use-workspace";
-import { ProjectsProvider } from "@/hooks/projects-context";
-import { TasksProvider } from "@/hooks/tasks-context";
-import { ContactsProvider } from "@/hooks/contacts-context";
+import { AppProviders } from "@/components/providers/app-providers";
 
 export default function AppLayout({
   children,
@@ -14,22 +10,14 @@ export default function AppLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ProjectsProvider>
-      <TasksProvider>
-        <ContactsProvider>
-          <WorkspaceProvider>
-            <PanelProvider>
-              <SidebarProvider>
-                <SidebarApp />
-                <SidebarInset>
-                  <TopBarApp />
-                  <ResizablePanelLayout>{children}</ResizablePanelLayout>
-                </SidebarInset>
-              </SidebarProvider>
-            </PanelProvider>
-          </WorkspaceProvider>
-        </ContactsProvider>
-      </TasksProvider>
-    </ProjectsProvider>
+    <AppProviders>
+      <SidebarProvider>
+        <SidebarApp />
+        <SidebarInset>
+          <TopBarApp />
+          <ResizablePanelLayout>{children}</ResizablePanelLayout>
+        </SidebarInset>
+      </SidebarProvider>
+    </AppProviders>
   );
 }
