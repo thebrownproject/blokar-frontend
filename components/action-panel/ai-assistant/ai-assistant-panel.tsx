@@ -5,12 +5,100 @@ import { MessageSquare } from "lucide-react";
 import { ActionPanelCard } from "../action-panel-card";
 import { ChatInput } from "./chat-input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useWorkspace } from "@/hooks/use-workspace";
+import { useProjects } from "@/hooks/use-projects";
 
 export function AiAssistantPanel() {
+  const workspace = useWorkspace();
+  const { projects } = useProjects();
+
   const { messages, input, handleInputChange, handleSubmit, isLoading } =
     useChat({
       api: "/api/chat",
       maxSteps: 5, // Enable multi-step tool calling
+      onToolCall: async ({ toolCall }) => {
+        // Handle client-side tools
+        switch (toolCall.toolName) {
+          case "clearAllCards":
+            workspace.clearAllCards();
+            return "All cards cleared from workspace";
+
+          case "showProjectCard": {
+            const args = toolCall.args as { projectId: string };
+            const project = projects.find((p) => p.id === args.projectId);
+            if (project) {
+              workspace.showProjectCard(project);
+              return `Showing ${project.name} project card`;
+            }
+            return `Project with ID ${args.projectId} not found`;
+          }
+
+          case "showMultipleProjectCards": {
+            const args = toolCall.args as { 
+              projectIds: string[]; 
+              clearFirst?: boolean 
+            };
+            const foundProjects = projects.filter((p) => 
+              args.projectIds.includes(p.id)
+            );
+            if (foundProjects.length > 0) {
+              workspace.showMultipleProjectCards(foundProjects, args.clearFirst);
+              return `Showing ${foundProjects.length} project cards`;
+            }
+            return `No projects found for the provided IDs`;
+          }
+
+          case "highlightProject": {
+            const args = toolCall.args as { projectId: string };
+            const project = projects.find((p) => p.id === args.projectId);
+            if (project) {
+              // Find the card ID for this project
+              const card = workspace.cards.find(
+                (c) => c.type === "project" && c.data.id === args.projectId
+              );
+              if (card) {
+                workspace.highlightCard(card.id);
+                return `Highlighted ${project.name} project card`;
+              }
+              return `Project ${project.name} is not currently displayed`;
+            }
+            return `Project with ID ${args.projectId} not found`;
+          }
+
+          case "refreshProjectList":
+            return "Project list refreshed";
+
+          case "updateWorkspaceLayout": {
+            const args = toolCall.args as { 
+              layout: "grid" | "list" | "timeline" | "kanban";
+              density?: "compact" | "comfortable" | "spacious";
+            };
+            workspace.setLayout(args.layout);
+            if (args.density) {
+              workspace.setDensity(args.density);
+            }
+            return `Workspace layout updated to ${args.layout}${
+              args.density ? ` with ${args.density} density` : ""
+            }`;
+          }
+
+          case "navigateToProject": {
+            const args = toolCall.args as { 
+              projectId: string; 
+              view?: "details" | "tasks" | "timeline" | "documents" 
+            };
+            const project = projects.find((p) => p.id === args.projectId);
+            if (project) {
+              workspace.showProjectCard(project);
+              return `Navigated to ${project.name} project`;
+            }
+            return `Project with ID ${args.projectId} not found`;
+          }
+
+          default:
+            return `Tool ${toolCall.toolName} executed`;
+        }
+      },
     });
 
   const headerActions = <MessageSquare className="h-4 w-4" />;
@@ -50,6 +138,11 @@ export function AiAssistantPanel() {
                         className="mt-2 text-xs opacity-75"
                       >
                         🔧 {tool.toolName}
+                        {tool.state === "result" && (
+                          <div className="mt-1 font-medium">
+                            ✅ {String(tool.result)}
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>

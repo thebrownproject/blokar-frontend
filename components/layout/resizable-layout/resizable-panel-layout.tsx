@@ -25,15 +25,15 @@ export function ResizablePanelLayout({ children }: ResizablePanelLayoutProps) {
         </div>
       </ResizablePanel>
 
+      <ResizableHandle withHandle />
+
       {isOpen && (
         <>
-          <div className="w-[500px]">
-            <ResizablePanel className="h-full max-h-[calc(100vh-4rem)]">
-              <div className="h-full">
-                <ActionPanelContent />
-              </div>
-            </ResizablePanel>
-          </div>
+          <ResizablePanel className="h-full max-h-[calc(100vh-4rem)]">
+            <div className="h-full">
+              <ActionPanelContent />
+            </div>
+          </ResizablePanel>
         </>
       )}
     </ResizablePanelGroup>
