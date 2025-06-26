@@ -4,12 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 
 // Import all tools directly - eliminates agent routing overhead
 import { projectTools } from "./tools/projects";
-import {
-  clearAllCards,
-  highlightProject,
-  refreshProjectList,
-  showProjectCard,
-} from "./tools/system";
+import { systemTools } from "./tools/system";
 
 // ✅ REMOVED: searchProjectsByLocation (was eliminated as redundant)
 
@@ -18,10 +13,7 @@ const allTools = {
   // Project management tools (CRUD operations)
   ...projectTools,
   // UI management tools (display and interaction)
-  clearAllCards,
-  highlightProject,
-  refreshProjectList,
-  showProjectCard,
+  ...systemTools,
 };
 
 // Single comprehensive system prompt that replaces Master Agent + Project Agent logic
@@ -146,7 +138,7 @@ export async function POST(req: Request) {
       system: BLOKAR_SYSTEM_PROMPT,
       messages,
       tools: allTools,
-      // maxSteps: 5, // Enable multi-step workflows within single call
+      maxSteps: 5, // Enable multi-step workflows within single call
 
       // Optional: Enable tool call streaming for real-time UI updates
       toolCallStreaming: true,

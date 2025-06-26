@@ -149,19 +149,7 @@ export default function PlaygroundPage() {
             </div>
           </div>
 
-          {/* AI Assistant Test */}
-          <div>
-            <h3 className="font-semibold mb-3">Blokar Co-pilot</h3>
-            <div className="grid gap-2 auto-fit-buttons">
-              <Button
-                onClick={() => openPanel("ai-assistant")}
-                variant="outline"
-                size="sm"
-              >
-                Blokar Co-pilot
-              </Button>
-            </div>
-          </div>
+
         </CardContent>
       </Card>
 
@@ -175,13 +163,7 @@ export default function PlaygroundPage() {
             Test the quick actions from the sidebar and topbar
           </p>
           <div className="flex flex-wrap gap-2">
-            <Button
-              onClick={() => openPanel("ai-assistant")}
-              variant="default"
-              size="sm"
-            >
-              Blokar Co-pilot (Quick Action)
-            </Button>
+
             <Button
               onClick={() => openPanel("new-task")}
               variant="default"
