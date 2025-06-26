@@ -3,6 +3,7 @@ import { TopBarApp } from "@/components/layout/topbar";
 import { ResizablePanelLayout } from "@/components/layout/resizable-layout";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppProviders } from "@/components/providers/app-providers";
+import { FloatingAIButton } from "@/components/layout/floating-ai-button";
 
 export default function AppLayout({
   children,
@@ -16,6 +17,7 @@ export default function AppLayout({
         <SidebarInset>
           <TopBarApp />
           <ResizablePanelLayout>{children}</ResizablePanelLayout>
+          <FloatingAIButton />
         </SidebarInset>
       </SidebarProvider>
     </AppProviders>

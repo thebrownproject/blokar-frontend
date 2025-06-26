@@ -18,19 +18,22 @@ export function ResizablePanelLayout({ children }: ResizablePanelLayoutProps) {
   return (
     <ResizablePanelGroup direction="horizontal" className="">
       <ResizablePanel>
-        <div className="pb-16">
-          <div className="h-[calc(100vh-4rem)] overflow-y-auto">
-            <div className="max-w-6xl mx-auto">{children}</div>
-          </div>
+        <div className="h-[calc(100vh-4rem)] overflow-y-auto">
+          <div className="max-w-6xl mx-auto p-6">{children}</div>
         </div>
       </ResizablePanel>
 
-      <ResizableHandle withHandle />
+      <ResizableHandle className="opacity-0 hover:opacity-0" />
 
       {isOpen && (
         <>
-          <ResizablePanel className="h-full max-h-[calc(100vh-4rem)]">
-            <div className="h-full">
+          <ResizablePanel
+            className="h-full max-h-[calc(100vh-4rem)]"
+            minSize={30}
+            defaultSize={40}
+            maxSize={60}
+          >
+            <div className="h-[calc(100vh-4rem)] overflow-y-auto">
               <ActionPanelContent />
             </div>
           </ResizablePanel>

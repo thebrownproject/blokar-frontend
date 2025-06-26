@@ -21,10 +21,12 @@ export function NavQuickActions({
     icon: LucideIcon;
   }[];
 }) {
-  const { openPanel } = usePanel();
+  const { openPanel, openAIAssistant } = usePanel();
 
   const handleActionClick = (action: (typeof actions)[0]) => {
-    if (action.panelType) {
+    if (action.panelType === "ai-assistant") {
+      openAIAssistant();
+    } else if (action.panelType) {
       openPanel(action.panelType as any);
     } else if (action.url) {
       window.location.href = action.url;
